@@ -129,3 +129,6 @@ Create Deployment Pipeline in Fabric.txt
 # Screenshot of the full report (contains tenant identifiers); embedded ones (01-03) are kept
 screenshots/04_e2e_test_report.png
 screenshots/03_outlook_email.png
+
+# Full (unredacted) local backups of demo scripts
+*.full.md
