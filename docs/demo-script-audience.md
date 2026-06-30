@@ -104,18 +104,7 @@ GitHub (main) → Dev Workspace → UAT → Prod
 
 **[DO]** Open the `rpt_hearst_exec` report in Prod workspace.
 
-**[SAY]** "This is our executive dashboard. It shows:
-- **Monthly Active Users (MAU)**: Trend over the last 90 days
-- **Churn Rate %**: By brand (Cosmopolitan, Esquire, ELLE, etc.)
-- **Monthly Recurring Revenue (MRR)**: Subscription revenue by brand
-- **Top Content**: Articles with the highest page views
-- **Ad Revenue**: Campaign performance and eCPM (effective cost per thousand impressions)"
-
-**[CLICK]** Click on "Cosmopolitan" brand in the slicer.
-
 **[EXPECT]** The visuals filter to show Cosmopolitan-only metrics.
-
-**[SAY]** "This is all powered by a **Direct Lake semantic model** reading directly from our gold lakehouse — no import refresh, no data movement, no lag. Changes in the lakehouse reflect in the report instantly."
 
 ---
 
@@ -125,16 +114,10 @@ GitHub (main) → Dev Workspace → UAT → Prod
 
 **[DO]** Open `agent_hearst_analytics` in Prod workspace.
 
-**[SAY]** "Now, let's ask the data agent a question. Instead of clicking through filters, I can just ask in natural language."
-
 **[TYPE]** In the agent chat interface: **"What was Cosmopolitan's churn rate last month?"**
-
-**[CLICK]** Send button.
 
 **[EXPECT]** The agent responds in 3-5 seconds with a natural-language answer:
 > "Cosmopolitan's churn rate in May 2026 was 9.8%. This was calculated from 487 churned subscribers out of 4,963 active subscribers."
-
-**[SAY]** "Behind the scenes, the agent generated a DAX query against the semantic model. Let me show you the query it used."
 
 **[DO]** Click **Show details** (or **View DAX**) in the agent response.
 
@@ -151,21 +134,15 @@ SUMMARIZECOLUMNS(
 ORDER BY dim_date[date_key] DESC
 ```
 
-**[SAY]** "This is the power of combining semantic models with AI — business users don't need to learn Power BI or DAX. They just ask questions."
-
 **[TYPE]** Another question: **"Which brand had the highest eCPM last quarter?"**
 
 **[EXPECT]** The agent responds with the brand and eCPM value (e.g., "ELLE had the highest eCPM at $12.47 in Q1 2026").
-
-**[SAY]** "Now let's see how we maintain and evolve this system using automated CI/CD."
 
 ---
 
 ### ACT 3: Make a Change in Dev (4 minutes)
 
 **[Screen: VS Code — local clone of the repo]**
-
-**[SAY]** "Let's say the CFO asks for a new metric: **New Subscriber Growth %** — the percentage of new signups relative to the active subscriber base.
 
 I'll add this as a DAX measure to the semantic model."
 
@@ -182,8 +159,6 @@ measure 'New Subscriber Growth %' =
     formatString: "0.00%"
 ```
 
-**[SAY]** "This measure divides new subscribers by active subscribers and formats it as a percentage."
-
 **[DO]** Save the file.
 
 **[Screen: PowerShell terminal]**
@@ -197,8 +172,6 @@ git push origin demo/add-measure
 
 **[EXPECT]** Git push succeeds.
 
-**[SAY]** "Now I'll open a pull request to merge this change into `main`."
-
 ---
 
 ### ACT 4: Open a Pull Request (2 minutes)
@@ -211,8 +184,6 @@ git push origin demo/add-measure
 - Base: `main`
 - Compare: `demo/add-measure`
 
-**[CLICK]** **Create pull request**.
-
 **[TYPE]** Title: `Add New Subscriber Growth % measure`
 
 **[TYPE]** Description:
@@ -222,11 +193,7 @@ git push origin demo/add-measure
 > - Format: Percentage with 2 decimals
 > - No breaking changes"
 
-**[CLICK]** **Create pull request**.
-
 **[EXPECT]** GitHub Actions CI workflow triggers automatically (you'll see a yellow dot next to the PR).
-
-**[SAY]** "GitHub Actions is now running our CI validation suite. Let's see what it checks."
 
 ---
 
@@ -236,26 +203,13 @@ git push origin demo/add-measure
 
 **[DO]** Click on the CI workflow run (the yellow dot should turn to a green checkmark or red X).
 
-**[SAY]** "Our CI pipeline runs three validation checks:
-1. **Best Practice Analyzer (BPA)**: Validates the semantic model schema — checks for missing formatStrings, invalid relationships, Direct Lake configuration errors
-2. **Terraform Validate**: Ensures infrastructure code is syntactically correct
-3. **Gitleaks**: Scans for accidentally committed secrets (API keys, passwords)"
-
 **[EXPECT]** After ~2-3 minutes, the CI workflow completes successfully (green checkmark).
-
-**[SAY]** "All checks passed. The BPA validated that our new measure has a formatString, doesn't break any relationships, and follows naming conventions.
 
 Now I can merge this PR."
 
 **[Screen: GitHub PR page]**
 
-**[CLICK]** **Merge pull request** button.
-
-**[CLICK]** **Confirm merge**.
-
 **[EXPECT]** The PR is merged into `main`.
-
-**[SAY]** "The moment this merges, our CD pipeline triggers automatically. Let's watch it flow through Dev → UAT → Prod."
 
 ---
 
@@ -265,8 +219,6 @@ Now I can merge this PR."
 
 **[DO]** Click on the **CD-Dev-Sync** workflow run (triggered by the merge to `main`).
 
-**[SAY]** "The first step is syncing the change into the Dev workspace using Fabric's `updateFromGit` API."
-
 **[EXPECT]** The workflow shows:
 ```
 ✅ Authenticate with service principal
@@ -275,19 +227,13 @@ Now I can merge this PR."
 ✅ Dev workspace updated successfully
 ```
 
-**[SAY]** "This takes ~2-3 minutes. Let's verify the change landed in Dev."
-
 **[Screen: Fabric Portal — Dev Workspace]**
 
 **[DO]** Refresh the Dev workspace page.
 
 **[DO]** Open `sm_hearst_audience` semantic model.
 
-**[CLICK]** **Open in Desktop** (or view measure list in the portal).
-
 **[EXPECT]** The new measure **"New Subscriber Growth %"** appears in the measure list.
-
-**[SAY]** "The measure is now live in Dev. Next, we promote it to UAT for testing."
 
 ---
 
@@ -297,28 +243,15 @@ Now I can merge this PR."
 
 **[DO]** Open the deployment pipeline view.
 
-**[SAY]** "I'm going to deploy from Dev to UAT using the deployment pipeline."
-
-**[CLICK]** The **Deploy** arrow between Dev and UAT stages.
-
 **[DO]** Review the deployment preview:
 - Items to deploy: `sm_hearst_audience` (semantic model)
 - Deployment rules: Rewrite lakehouse binding from Dev to UAT
 
-**[CLICK]** **Deploy** button.
-
 **[EXPECT]** The deployment starts (progress spinner).
-
-**[SAY]** "While this deploys, our automation is also running the UAT quality gate suite in the background. Let me show you what that entails."
 
 **[Screen: GitHub Actions — CD-Promote-UAT workflow]**
 
 **[DO]** Open the **CD-Promote-UAT** workflow run.
-
-**[SAY]** "After the deployment completes, we run three quality gates:
-1. **Data Quality Tests**: Checks gold lakehouse for NULL values, referential integrity, dimension uniqueness, date continuity
-2. **DAX Reconciliation**: Validates that every DAX measure matches the source data in the lakehouse (within ±1% tolerance)
-3. **BPA (again)**: Re-validates the semantic model in UAT"
 
 **[EXPECT]** After ~3-4 minutes, the workflow shows:
 ```
@@ -329,13 +262,9 @@ Now I can merge this PR."
 ✅ UAT quality gates PASSED — ready for Production
 ```
 
-**[SAY]** "All quality gates passed. This means the new measure is mathematically correct and doesn't break any existing reports. Now we can promote to Production."
-
 **Fallback (if gates fail):**
 If the quality gates fail during the demo:
-- **[SAY]** "Uh-oh, looks like we caught a bug! This is exactly why we have quality gates. Let me show you the failure."
 - **[DO]** Click on the failed test step in GitHub Actions.
-- **[SAY]** "For example, if the DAX reconciliation fails, it means the new measure doesn't match the source data — maybe I used the wrong column or formula. We fix it in Dev and re-run the promotion. The pipeline prevents bad code from reaching Production."
 - **[DO]** Skip to ACT 9 (rollback demo) or conclude with a note: "In a real scenario, I'd fix the issue in Dev, open a new PR, and re-run the pipeline."
 
 ---
@@ -346,15 +275,11 @@ If the quality gates fail during the demo:
 
 **[DO]** Open the **CD-Promote-Prod** workflow.
 
-**[SAY]** "Now we're ready for Production. But notice — this workflow is **paused**, waiting for manual approval. That's our final gate: a human must review and approve before code touches Production."
-
 **[EXPECT]** The workflow shows a **"Waiting for approval"** banner.
 
 **[DO]** Click **Review deployments** button (or **Approve** in GitHub UI).
 
 **[DO]** Select **Production** environment.
-
-**[CLICK]** **Approve and deploy**.
 
 **[EXPECT]** The workflow resumes and executes:
 ```
@@ -364,8 +289,6 @@ If the quality gates fail during the demo:
 ✅ Deployment complete
 ```
 
-**[SAY]** "The deployment is complete. Let's verify the change is live in Production."
-
 **[Screen: Fabric Portal — Prod Workspace]**
 
 **[DO]** Open `sm_hearst_audience` in Prod workspace.
@@ -374,8 +297,6 @@ If the quality gates fail during the demo:
 
 **[EXPECT]** The new measure **"New Subscriber Growth %"** is present.
 
-**[SAY]** "The measure is now live in Production. Let's test it in the report."
-
 **[Screen: Power BI Report (Prod)]**
 
 **[DO]** Open `rpt_hearst_exec` report.
@@ -383,8 +304,6 @@ If the quality gates fail during the demo:
 **[DO]** Add a card visual (or table) showing the new measure: **New Subscriber Growth %**.
 
 **[EXPECT]** The visual displays a percentage (e.g., "2.34%").
-
-**[SAY]** "This measure is now live for all users. And remember — because we're using Direct Lake, this is reading directly from the lakehouse. No refresh delay, no data movement."
 
 ---
 
@@ -399,21 +318,11 @@ If the quality gates fail during the demo:
 **[EXPECT]** The agent responds:
 > "Cosmopolitan's new subscriber growth rate is 2.12%. This is based on 105 new subscribers and 4,963 active subscribers."
 
-**[SAY]** "The agent automatically discovered the new measure and can now answer questions about it — without any manual configuration or retraining. That's the power of semantic layer + AI."
-
 ---
 
 ### CLOSING: Summary & Recap (2 minutes)
 
 **[Screen: Architecture diagram or slide deck]**
-
-**[SAY]** "Let me recap what we just saw in under 10 minutes of automation:
-1. **Added a new DAX measure** in VS Code
-2. **Opened a pull request** → CI validated the schema and detected no issues
-3. **Merged to main** → CD synced the change to Dev automatically
-4. **Promoted to UAT** → Quality gates validated data integrity and DAX correctness
-5. **Approved for Prod** → Manual gate ensured human oversight
-6. **Deployed to Prod** → The measure is now live in reports and the data agent
 
 This entire flow is:
 - **Automated**: No manual deployments or copy-paste errors
@@ -425,13 +334,6 @@ And the best part? This works for **any Fabric item** — notebooks, warehouses,
 
 **[Screen: GitHub Repo — README.md or docs/]**
 
-**[SAY]** "If you want to try this yourself, the entire solution is open-source and available in this repository. It includes:
-- Terraform for infrastructure provisioning
-- GitHub Actions for CI/CD orchestration
-- Python scripts for Fabric API automation
-- A complete medallion architecture with synthetic data
-- And a step-by-step runbook for TRIAL capacity setup
-
 Thank you! Questions?"
 
 ---
@@ -442,23 +344,15 @@ Thank you! Questions?"
 
 **Symptom:** The `updateFromGit` API call returns an error (e.g., "conflict detected" or "authentication failed").
 
-**[SAY]** "Looks like the Git sync hit an issue. This can happen if someone made a change directly in Fabric instead of going through Git. Let me show you how we handle conflicts."
-
 **[DO]** In Fabric portal (Dev workspace), go to **Source control** → **View conflicts**.
 
-**[SAY]** "We can see which items have conflicts. We resolve them by choosing either 'Git version' or 'Workspace version'. For our CI/CD workflow, Git is the source of truth, so we'd choose 'Git version'."
-
 **[DO]** Select "Git version" and resolve the conflict.
-
-**[SAY]** "In a real production scenario, we'd investigate why someone bypassed Git and remind the team that all changes must go through pull requests."
 
 ---
 
 ### Scenario 2: UAT Quality Gates Fail
 
 **Symptom:** The `run_uat_tests.py` script exits with code 1 (test failure).
-
-**[SAY]** "Uh-oh, our quality gates caught a problem. This is exactly why we have automated testing — let me show you what failed."
 
 **[Screen: GitHub Actions — test failure logs]**
 
@@ -468,11 +362,6 @@ Thank you! Questions?"
 ```
 [ERROR] DAX reconciliation failed: Measure 'New Subscriber Growth %' returned 2.34%, but SQL query returned 2.41% (7% relative difference, exceeds 1% tolerance)
 ```
-
-**[SAY]** "The test found a mismatch between the DAX measure and the source data. This could mean:
-- The DAX formula has a bug (e.g., wrong column reference)
-- The lakehouse data has an integrity issue
-- The test tolerance is too strict
 
 In a real scenario, I'd:
 1. Investigate the root cause (review the DAX formula and SQL query)
@@ -488,11 +377,6 @@ The key point: **bad code never reaches Production**. The quality gates blocked 
 
 **Symptom:** The deployment is stuck at "Deploying..." for more than 5 minutes.
 
-**[SAY]** "Looks like the deployment is taking longer than expected. This can happen if:
-- Fabric is under heavy load (rare)
-- The workspace has a large number of items (notebooks, datasets, reports)
-- A long-running operation (LRO) is stuck
-
 Let me check the deployment status via the Fabric API."
 
 **[DO]** Open PowerShell and run:
@@ -501,15 +385,11 @@ cd scripts
 python check_deployment_status.py --pipeline-id <pipeline-id> --deployment-id <deployment-id>
 ```
 
-**[SAY]** "In a real scenario, we'd either wait for the deployment to complete or cancel it and retry. Fabric deployments are idempotent, so retrying is safe."
-
 ---
 
 ### Scenario 4: Report Doesn't Render in Prod
 
 **Symptom:** The report opens but shows blank visuals or errors.
-
-**[SAY]** "The report isn't rendering correctly. Let me troubleshoot."
 
 **[DO]** Open the semantic model `sm_hearst_audience` in Prod.
 
@@ -517,20 +397,11 @@ python check_deployment_status.py --pipeline-id <pipeline-id> --deployment-id <d
 
 **[EXPECT]** If the semantic model is in "import mode" instead of "Direct Lake":
 
-**[SAY]** "Aha! The semantic model fell back to import mode. This can happen if:
-- The lakehouse connection string is incorrect
-- The deployment rules didn't rewrite the lakehouse binding correctly
-- Direct Lake mode isn't supported in this environment (e.g., not using Fabric capacity)
-
 Let me verify the deployment rules."
 
 **[DO]** In the deployment pipeline, click **Deployment settings** → **Prod stage** → **Data source rules**.
 
-**[SAY]** "I can see the deployment rule is configured correctly. The issue might be that the lakehouse in Prod is empty — remember, deployment pipelines move **metadata**, not **data**. Let me run the medallion notebooks in Prod to seed the data."
-
 **[DO]** In Prod workspace, run `nb_hearst_bronze_ingest` → `nb_hearst_silver_transform` → `nb_hearst_gold_build`.
-
-**[SAY]** "After the notebooks finish, the report should render correctly."
 
 ---
 
