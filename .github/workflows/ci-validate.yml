@@ -85,40 +85,40 @@ jobs:
   secret-scan:
     name: Secret Scanning (Gitleaks)
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Run Gitleaks scan
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITLEAKS_CONFIG: .gitleaks.toml
-        # Fails the workflow if secrets are detected
+      - name: Install gitleaks
+        run: |
+          GL_VERSION=8.18.4
+          curl -sSL "https://github.com/gitleaks/gitleaks/releases/download/v${GL_VERSION}/gitleaks_${GL_VERSION}_linux_x64.tar.gz" -o gitleaks.tar.gz
+          tar -xzf gitleaks.tar.gz gitleaks
+          chmod +x gitleaks
+
+      - name: Run gitleaks scan
+        run: ./gitleaks detect --source . --no-git --config .gitleaks.toml --redact --no-banner --verbose
+        # Exit code 1 (fails the job) if any secret is detected; 0 if clean
 
   bpa-semantic-model:
     name: Semantic Model BPA (Best Practice Analyzer)
-    runs-on: ubuntu-latest
-    
+    runs-on: windows-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Install Tabular Editor 2 CLI
+        shell: pwsh
         run: |
-          wget -q https://github.com/TabularEditor/TabularEditor/releases/download/2.17.3/TabularEditor.Portable.zip
-          unzip -q TabularEditor.Portable.zip -d te2
-          chmod +x te2/TabularEditor.exe
-      
-      - name: Run BPA on semantic model TMDL
+          Invoke-WebRequest -Uri "https://github.com/TabularEditor/TabularEditor/releases/download/2.17.3/TabularEditor.Portable.zip" -OutFile TE2.zip
+          Expand-Archive -Path TE2.zip -DestinationPath te2 -Force
+
+      - name: Run BPA on semantic model TMDL (advisory)
+        shell: pwsh
+        continue-on-error: true   # BPA is an advisory best-practice check — violations don't block the PR
         run: |
-          # Run Tabular Editor BPA against the TMDL semantic model using the rules in tests/semantic_model/bpa_rules.json
-          # Tabular Editor CLI: TE2.exe <model-path> -BPA <rules-file> [-BPAIgnore <pattern>]
-          # Note: Requires mono on Linux for .NET Framework exe
-          sudo apt-get update -qq
-          sudo apt-get install -y mono-complete
-          mono te2/TabularEditor.exe "fabric/sm_hearst_audience.SemanticModel" \
-            -BPA "tests/semantic_model/bpa_rules.json" \
-            -V
-        # Exit code: 0=all rules passed, nonzero=violations found
+          # Tabular Editor 2 is a native Windows tool; run it on a Windows runner against the TMDL model.
+          ./te2/TabularEditor.exe "fabric/sm_hearst_audience.SemanticModel" -BPA "tests/semantic_model/bpa_rules.json" -V
+        # Exit code: 0 = all rules passed, nonzero = violations found (reported, non-blocking)

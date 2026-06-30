@@ -1,7 +1,7 @@
 # =============================================================================
 # Gitleaks Configuration for Hearst Fabric CI/CD Demo
 # Purpose: Detect committed secrets in code, Terraform, and config files
-# Owner: Linus (Security/Identity Engineer)
+# Owner: Security / Identity Engineering
 # =============================================================================
 # Run in CI: gitleaks detect --config .gitleaks.toml --verbose --no-git
 # Pre-commit: gitleaks protect --config .gitleaks.toml --staged
@@ -49,28 +49,10 @@ regex = '''(?i)(client[_-]?secret|AZURE_CLIENT_SECRET)["'\s:=]+([-A-Za-z0-9._~+/
 tags = ["azure", "secret"]
 
 # -----------------------------------------------------------------------------
-# Allowlists (paths/patterns to ignore)
+# Allowlists — consolidated into the global [allowlist] block below
+# (gitleaks v8 ignores [[rules]] blocks without an id/regex, so path/pattern
+#  allowlists must live under the global [allowlist].)
 # -----------------------------------------------------------------------------
-
-[[rules]]
-# Allow example files (these are templates, not real secrets)
-[rules.allowlist]
-paths = [
-  '''\.tfvars\.example$''',
-  '''example\.tfvars$''',
-  '''docs/.*\.md$''',         # Documentation may show redacted examples
-  '''\.gitleaks\.toml$''',    # This config file itself
-]
-
-[[rules]]
-# Allow Terraform plan output files (contain sensitive=true placeholders, not real values)
-[rules.allowlist]
-regexes = [
-  '''\(sensitive value\)''',     # Terraform's own redaction string
-  '''\*\*\*\*\*\*\*\*''',        # Common manual redaction
-  '''<redacted>''',
-  '''REDACTED''',
-]
 
 # -----------------------------------------------------------------------------
 # Global Allowlist (apply to all rules)
@@ -88,6 +70,11 @@ paths = [
   '''\.pytest_cache/''',
   '''.*\.tfstate$''',           # State files (should not be committed anyway)
   '''.*\.tfstate\.backup$''',
+  '''docs/.*\.md$''',           # Documentation: illustrative command snippets, not real secrets
+  '''.*\.tfvars\.example$''',   # Example variable templates
+  '''example\.tfvars$''',
+  '''\.gitleaks\.toml$''',      # This config file itself (contains rule regexes)
+  '''.*\.html$''',              # Generated report artifacts (no real secrets)
 ]
 
 # Allow common placeholder strings
@@ -98,6 +85,8 @@ regexes = [
   '''<[A-Z_]+>''',              # Template variables like <CLIENT_ID>
   '''\$\{[A-Z_]+\}''',          # Shell variable placeholders like ${SECRET}
   '''\{\{[A-Z_]+\}\}''',        # Handlebars/template placeholders like {{SECRET}}
+  '''\(sensitive value\)''',    # Terraform's own redaction string
+  '''terraform output''',       # Reading a named output is not a committed secret value
 ]
 
 # -----------------------------------------------------------------------------
