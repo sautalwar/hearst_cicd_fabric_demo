@@ -18,6 +18,10 @@
 # **Target:** `lh_hearst_gold` lakehouse with schema-enabled **gold** schema.  
 # **Data Product:** Hearst Digital Audience & Subscription Analytics.
 # 
+# **Demo change (feature branch):** This note was added to demonstrate the CI/CD flow —
+# on merge to `main` it syncs to the Dev workspace and promotes Dev → UAT → Prod through
+# the Fabric deployment pipeline.
+# 
 # ---
 # 
 # ## ⭐ Star Schema Design
