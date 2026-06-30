@@ -1,7 +1,7 @@
 # =============================================================================
 # Gitleaks Configuration for Hearst Fabric CI/CD Demo
 # Purpose: Detect committed secrets in code, Terraform, and config files
-# Owner: Linus (Security/Identity Engineer)
+# Owner: Security / Identity Engineering
 # =============================================================================
 # Run in CI: gitleaks detect --config .gitleaks.toml --verbose --no-git
 # Pre-commit: gitleaks protect --config .gitleaks.toml --staged
