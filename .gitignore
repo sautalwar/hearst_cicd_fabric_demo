@@ -1,0 +1,130 @@
+# =============================================================================
+# Hearst Fabric CI/CD Demo — .gitignore
+# Purpose: Prevent secrets, state, and ephemeral files from being committed
+# =============================================================================
+
+# -------------------------
+# Terraform State & Secrets
+# -------------------------
+# (NOTE: .gitignore does not support inline comments — keep patterns on their own line)
+*.tfstate
+*.tfstate.*
+# Variable files often hold secrets; *.tfvars.example is re-included below
+*.tfvars
+# Binary plan files (e.g. infra/plan.tfplan)
+*.tfplan
+# JSON plan export may contain sensitive values
+plan.json
+# Diagnostic plan transcripts
+tf-plan-*.txt
+# Downloaded local tooling (tflint, etc.)
+tools/
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraform/
+.terraform.lock.hcl
+
+# Allow example variable files (no secrets)
+!*.tfvars.example
+!example.tfvars
+
+# -------------------------
+# Environment & Secrets Files
+# -------------------------
+.env
+.env.*
+*.env
+.envrc
+secret.*
+*secret*
+*credential*
+*.pem
+*.key
+*.p12
+*.pfx
+
+# -------------------------
+# Python
+# -------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+*.egg-info/
+dist/
+build/
+
+# -------------------------
+# Jupyter / Notebooks (keep .Notebook/ directories for Fabric items)
+# -------------------------
+.ipynb_checkpoints
+*.ipynb_checkpoints
+
+# -------------------------
+# IDE / Editor
+# -------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# -------------------------
+# Logs
+# -------------------------
+*.log
+logs/
+
+# -------------------------
+# OS / System
+# -------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# -------------------------
+# Azure / Cloud
+# -------------------------
+*.publishsettings
+.azure/
+
+# -------------------------
+# GitHub Actions (local act runs)
+# -------------------------
+.actrc
+act-cache/
+
+# End-to-end test transcripts (contain tenant identifiers)
+e2e_*.txt
+
+# =============================================================================
+# Internal working artifacts — kept locally, NOT shared with the customer
+# =============================================================================
+# Working HTML drafts (keep only the e2e test report)
+hearst_*.html
+!hearst_e2e_test_report.html
+hearst_e2e_test_report.local.html
+# Working Markdown drafts (status doc + outreach email) — repo docs live in README.md and docs/
+hearst_*.md
+# Internal session/thought logs and AI-team scaffolding
+session_log.md
+.squad/
+Create Deployment Pipeline in Fabric.txt
+# Screenshot of the full report (contains tenant identifiers); embedded ones (01-03) are kept
+screenshots/04_e2e_test_report.png

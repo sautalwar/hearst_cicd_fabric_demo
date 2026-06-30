@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Hearst Fabric CI/CD — End-to-End Test Report</title>
+<style>
+  :root{--bg:#0f1420;--panel:#161d2e;--panel2:#1b2438;--ink:#e9eef7;--muted:#a3b4cd;
+    --line:#2a3656;--accent:#5aa9ff;--green:#43d39e;--amber:#ffc24b;--red:#ff7a7a;--violet:#b08cff;}
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,#0b0f18,#0f1420 260px);color:var(--ink);
+    font:15px/1.6 -apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  .wrap{max-width:1040px;margin:0 auto;padding:32px 22px 80px}
+  h1{font-size:27px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:14.5px}
+  .verdict{display:inline-block;margin:14px 0 4px;padding:8px 16px;border-radius:10px;font-weight:700;
+    color:var(--green);background:#11271f;border:1px solid #2c5a48;font-size:15px}
+  h2{font-size:19px;margin:32px 0 12px;border-bottom:1px solid var(--line);padding-bottom:7px}
+  h3{font-size:15px;margin:18px 0 6px}
+  table{width:100%;border-collapse:collapse;margin:8px 0;font-size:13.5px}
+  th,td{text-align:left;padding:8px 11px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-weight:600;background:var(--panel)}
+  .term{background:#0a0f1a;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:8px 0;
+    font-family:Consolas,Menlo,monospace;font-size:12.5px;color:#cde0ff;white-space:pre-wrap;overflow-x:auto;line-height:1.45}
+  .term .ok{color:var(--green)} .term .warn{color:var(--amber)} .term .dim{color:#7d8aa3} .term .cmd{color:#9fe3c4}
+  .pill{font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px}
+  .p-pass{color:var(--green);background:#11271f;border:1px solid #2c5a48}
+  .p-fix{color:var(--amber);background:#241d0e;border:1px solid #5a4a1f}
+  code{background:#0c1322;border:1px solid var(--line);border-radius:4px;padding:1px 6px;color:#bcd2ff;font-size:12.5px}
+  .grid{display:flex;gap:12px;flex-wrap:wrap;margin:10px 0}
+  .stat{flex:1 1 150px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px}
+  .stat .n{font-size:24px;font-weight:700}.stat .l{color:var(--muted);font-size:12px;text-transform:uppercase}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:12px 0}
+  .find{border-left:4px solid var(--amber)}
+  .shot{margin:10px 0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#000}
+  .shot img{display:block;width:100%;height:auto}
+  .shot .cap{background:var(--panel2);color:var(--muted);font-size:12.5px;padding:7px 12px;border-top:1px solid var(--line)}
+  ul li{margin:5px 0}
+  .muted{color:var(--muted)}
+  footer{margin-top:36px;color:#7d8aa3;font-size:12px;border-top:1px solid var(--line);padding-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>End-to-End Test Report</h1>
+  <div class="sub">Hearst — Microsoft Fabric CI/CD Terraform package · pre-handover verification</div>
+  <div><span class="verdict">✅ PASS — live <code>terraform plan</code> succeeded: 25 resources, 0 errors</span></div>
+  <p class="muted">Run by Saurabh on 2026-06-30 against the live tenant <code>your-fabric-tenant</code>.
+  This was a <strong>plan</strong> — it created <strong>nothing</strong> — so it proves the package end-to-end
+  (auth, providers, schema, dependency graph, full resource set) with zero cost or footprint. The test also
+  <strong>caught and fixed two real issues</strong> before handover (below).</p>
+
+  <div class="grid">
+    <div class="stat"><div class="n">25</div><div class="l">resources planned</div></div>
+    <div class="stat"><div class="n">6 / 6</div><div class="l">checks passed</div></div>
+    <div class="stat"><div class="n">2</div><div class="l">issues found &amp; fixed</div></div>
+    <div class="stat"><div class="n">0</div><div class="l">resources created</div></div>
+  </div>
+
+  <h2>Test environment</h2>
+  <table>
+    <tr><th>Terraform</th><td>v1.15.6 (windows_amd64)</td></tr>
+    <tr><th>Providers</th><td>microsoft/fabric v1.11.0 · hashicorp/azurerm v4.79.0 · hashicorp/azuread v3.9.0</td></tr>
+    <tr><th>Linter</th><td>TFLint v0.55.1 (+ bundled terraform ruleset 0.10.0)</td></tr>
+    <tr><th>Identity</th><td>admin@your-fabric-tenant (Azure CLI session)</td></tr>
+    <tr><th>Tenant / Subscription</th><td>xxxxxxxx-… / your-subscription</td></tr>
+    <tr><th>Entry point</th><td><code>infra/deploy.ps1</code> (one-command orchestrator) — plan only, no <code>-Apply</code></td></tr>
+  </table>
+
+  <h2>Results at a glance</h2>
+  <table>
+    <tr><th>#</th><th>Step</th><th>Command</th><th>Result</th></tr>
+    <tr><td>1</td><td>Format</td><td><code>terraform fmt -recursive</code></td><td><span class="pill p-pass">PASS</span> consistent</td></tr>
+    <tr><td>2</td><td>Init / provider resolution</td><td><code>terraform init</code></td><td><span class="pill p-pass">PASS</span> 3 providers</td></tr>
+    <tr><td>3</td><td>Validate</td><td><code>terraform validate</code></td><td><span class="pill p-pass">PASS</span> valid</td></tr>
+    <tr><td>4</td><td>Lint</td><td><code>tflint</code></td><td><span class="pill p-fix">FIXED</span> 3 → 0 warnings</td></tr>
+    <tr><td>5</td><td><strong>Live plan</strong> (real tenant)</td><td><code>deploy.ps1</code> → <code>terraform plan</code></td><td><span class="pill p-pass">PASS</span> 25 to add</td></tr>
+    <tr><td>6</td><td>Run report</td><td><code>tf_run_report.ps1</code></td><td><span class="pill p-pass">PASS</span> generated</td></tr>
+  </table>
+
+  <h2>Step-by-step (with captured output)</h2>
+
+  <h3>1–3 · Format, init, validate</h3>
+  <div class="term"><span class="cmd">&gt; terraform init</span>
+- Using previously-installed microsoft/fabric v1.11.0
+- Using previously-installed hashicorp/azuread v3.9.0
+- Using previously-installed hashicorp/azurerm v4.79.0
+<span class="ok">Terraform has been successfully initialized!</span>
+
+<span class="cmd">&gt; terraform validate</span>
+<span class="ok">Success! The configuration is valid.</span></div>
+
+  <h3>4 · TFLint — found 3 issues, fixed, re-ran clean</h3>
+  <div class="term"><span class="cmd">&gt; tflint --chdir=infra   (before)</span>
+<span class="warn">3 issue(s) found:</span>
+Warning: variable "sp_object_id" is declared but not used (terraform_unused_declarations)
+Warning: variable "fabric_sp_client_id" is declared but not used
+Warning: variable "fabric_sp_client_secret" is declared but not used
+
+<span class="cmd">&gt; tflint --chdir=infra   (after removing the 3 unused vars)</span>
+<span class="dim">(no issues)</span>  <span class="ok">Exit code: 0</span></div>
+
+  <h3>5 · Live <code>terraform plan</code> via the orchestrator</h3>
+  <div class="term"><span class="cmd">&gt; ./deploy.ps1</span>
+==&gt; Signed in as admin@your-fabric-tenant | subscription: your-subscription
+==&gt; Writing generated.auto.tfvars (mandatory values filled; optional defaulted)...
+  Resolved parameters:
+    subscription_id : xxxxxxxx-…-xxxxxxxx
+    tenant_id       : xxxxxxxx-…-xxxxxxxx
+    admin_object_id : xxxxxxxx-…-xxxxxxxx
+    key_vault_name  : kvhearstxxxxxx          <span class="dim"># auto-unique</span>
+    capacity        : create new F2           <span class="dim"># minimum SKU</span>
+    example_workload: true
+==&gt; terraform plan (creates nothing)...
+data.azuread_client_config.current: Read complete after 0s
+  …
+<span class="ok">Plan: 25 to add, 0 to change, 0 to destroy.</span>
+Saved the plan to: plan.tfplan
+==&gt; Run report written: run-report.html (25 to create, 0 to change, 0 to destroy)
+==&gt; Done.</div>
+
+  <h2>Issues the test caught — and fixed</h2>
+
+  <div class="card find">
+    <h3>① azurerm v4 auto resource-provider registration → multi-minute hang <span class="pill p-fix">FIXED</span></h3>
+    <p>The first plan stalled for minutes after authentication. Debug logging showed the azurerm provider
+    enumerating <em>every</em> resource provider in the subscription (unrelated to this workload):</p>
+    <div class="term"><span class="dim">GET /subscriptions/…/providers/Microsoft.Maps?api-version=2022-09-01
+GET /subscriptions/…/providers/Microsoft.DesktopVirtualization?…
+GET /subscriptions/…/providers/Microsoft.Automation?…
+GET /subscriptions/…/providers/Microsoft.PowerBIDedicated?…</span></div>
+    <p><strong>Fix:</strong> set <code>resource_provider_registrations = "none"</code> on the azurerm provider.
+    Plans/applies are now fast and need fewer permissions. The customer pre-registers <code>Microsoft.Fabric</code>
+    once (noted in prerequisites). <strong>Result:</strong> plan completes in seconds.</p>
+  </div>
+
+  <div class="card find">
+    <h3>② Three unused legacy variables <span class="pill p-fix">FIXED</span></h3>
+    <p>TFLint flagged <code>sp_object_id</code>, <code>fabric_sp_client_id</code>, and
+    <code>fabric_sp_client_secret</code> as declared-but-unused (the service principal is created in
+    <code>identity.tf</code>, not passed in). <strong>Fix:</strong> removed all three. TFLint now reports 0 issues.</p>
+  </div>
+
+  <h2>What the live plan will create (25 resources)</h2>
+  <table>
+    <tr><th>Layer</th><th>Resources</th><th>Count</th></tr>
+    <tr><td>Foundation</td><td><code>azurerm_resource_group</code></td><td>1</td></tr>
+    <tr><td>Identity (Entra)</td><td><code>azuread_application</code>, <code>azuread_service_principal</code>, <code>azuread_application_password</code></td><td>3</td></tr>
+    <tr><td>Key Vault + RBAC</td><td><code>azurerm_key_vault</code>, <code>azurerm_role_assignment</code> ×2, <code>azurerm_key_vault_secret</code> ×3</td><td>6</td></tr>
+    <tr><td>Fabric capacity</td><td><code>azurerm_fabric_capacity</code> (F2)</td><td>1</td></tr>
+    <tr><td>Workspaces + roles</td><td><code>fabric_workspace</code> ×3 (Dev/UAT/Prod), <code>fabric_workspace_role_assignment</code> ×6</td><td>9</td></tr>
+    <tr><td>Deployment pipeline</td><td><code>fabric_deployment_pipeline</code></td><td>1</td></tr>
+    <tr><td>Example workload</td><td><code>fabric_lakehouse</code>, <code>fabric_warehouse</code>, <code>fabric_notebook</code>, <code>fabric_data_pipeline</code></td><td>4</td></tr>
+    <tr><td colspan="2" style="text-align:right"><strong>Total</strong></td><td><strong>25</strong></td></tr>
+  </table>
+  <p class="muted">Full machine-readable detail: <code>infra/run-report.html</code> (generated automatically by the orchestrator).</p>
+
+  <h2>Screenshots</h2>
+  <div class="shot"><img src="screenshots/01_terraform_run_report.png" alt="Terraform run report" />
+    <div class="cap">① <code>infra/run-report.html</code> — auto-generated from the live plan (25 to create, by deployment phase).</div></div>
+  <div class="shot"><img src="screenshots/02_status_onepager.png" alt="Status one-pager" />
+    <div class="cap">② <code>hearst_terraform_status.html</code> — the customer-facing status one-pager.</div></div>
+  <div class="shot"><img src="screenshots/03_outlook_email.png" alt="Outlook-ready email" />
+    <div class="cap">③ <code>hearst_followup_email_outlook.html</code> — the copy-paste-ready Outlook email.</div></div>
+
+  <h2>Scope &amp; honesty — what is and isn't proven</h2>
+  <table>
+    <tr><th>Proven by this live test</th><th>Not done (by design)</th></tr>
+    <tr><td>
+      • Authentication to the real tenant<br>
+      • Provider download &amp; version lock<br>
+      • Config validity (<code>validate</code>) + lint (<code>tflint</code>)<br>
+      • Full dependency graph resolves<br>
+      • Complete 25-resource plan with no errors<br>
+      • One-command orchestrator + auto run report
+    </td><td>
+      • <strong>No <code>terraform apply</code></strong> — zero resources created, zero cost incurred<br>
+      • Runtime behavior of created items (notebook execution, Direct Lake) is exercised in the customer's tenant<br>
+      • Global uniqueness of the Key Vault name is only confirmed at apply
+    </td></tr>
+  </table>
+
+  <h2>Customer prerequisites (before <code>terraform apply</code>)</h2>
+  <ul>
+    <li><strong>Azure CLI sign-in</strong> — <code>az login</code> to the target tenant/subscription.</li>
+    <li><strong>Resource provider</strong> — register <code>Microsoft.Fabric</code> (and <code>Microsoft.KeyVault</code>) once:
+      <code>az provider register --namespace Microsoft.Fabric</code> (auto-registration is intentionally disabled).</li>
+    <li><strong>Entra rights</strong> — permission to create an app registration / service principal.</li>
+    <li><strong>Fabric tenant settings</strong> — “Service principals can use Fabric APIs” and “Users can create Fabric items”.</li>
+    <li><strong>Capacity admin</strong> — at least one admin UPN/SP for the new capacity (auto-filled from the signed-in user).</li>
+    <li><strong>Unique Key Vault name</strong> — the wrapper appends a random suffix; override with <code>-KeyVaultName</code> if desired.</li>
+    <li><strong>Cost note</strong> — a newly created F2 capacity is billable while it exists; <code>terraform destroy</code> removes it.</li>
+  </ul>
+
+  <h2>How the customer runs it</h2>
+  <div class="term"><span class="cmd">cd infra</span>
+<span class="cmd">./deploy.ps1</span>            <span class="dim"># plan only — auto-fills params, writes the run report</span>
+<span class="cmd">./deploy.ps1 -Apply</span>     <span class="dim"># create the resources after reviewing the plan</span></div>
+  <p class="muted">All <code>infra/*.tf</code> form one Terraform module that is applied in dependency order automatically —
+  the customer never chooses which file runs first.</p>
+
+  <footer>End-to-end test executed live against the customer-class tenant. Plan-only: no resources were created.
+  Artifacts: infra/run-report.html · screenshots/ · e2e_deploy_output.txt · e2e_tflint_output.txt.</footer>
+</div>
+</body>
+</html>

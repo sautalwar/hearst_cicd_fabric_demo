@@ -1,0 +1,85 @@
+name: CD - Promote to UAT
+
+on:
+  workflow_dispatch: # Manual trigger for UAT promotion
+  workflow_run:
+    workflows: ["CD - Dev Sync (Git → Fabric Dev Workspace)"]
+    types:
+      - completed
+    branches:
+      - main
+
+jobs:
+  promote-uat:
+    name: Deploy Dev → UAT
+    runs-on: ubuntu-latest
+    environment: uat # GitHub Environment for secret scoping + optional approval
+    # Only run if the dev-sync workflow succeeded (for workflow_run trigger)
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+
+      - name: Mask secrets
+        run: |
+          echo "::add-mask::${{ secrets.AZURE_CLIENT_SECRET }}"
+
+      - name: Deploy Dev → UAT
+        env:
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          DEPLOYMENT_PIPELINE_ID: ${{ secrets.DEPLOYMENT_PIPELINE_ID }}
+          SOURCE_STAGE_ORDER: 0 # Dev stage
+          TARGET_STAGE_ORDER: 1 # UAT stage
+        run: |
+          python scripts/deploy_stage.py
+
+      - name: Rebuild UAT gold data (medallion pipeline)
+        env:
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          FABRIC_WORKSPACE_ID: ${{ secrets.FABRIC_UAT_WORKSPACE_ID }}
+          BRONZE_NOTEBOOK_ID: ${{ secrets.UAT_BRONZE_NOTEBOOK_ID }}
+          SILVER_NOTEBOOK_ID: ${{ secrets.UAT_SILVER_NOTEBOOK_ID }}
+          GOLD_NOTEBOOK_ID: ${{ secrets.UAT_GOLD_NOTEBOOK_ID }}
+        run: |
+          python scripts/run_medallion.py
+
+      - name: Configure Direct Lake deployment rules
+        env:
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          DEPLOYMENT_PIPELINE_ID: ${{ secrets.DEPLOYMENT_PIPELINE_ID }}
+          TARGET_STAGE_ORDER: 1 # UAT stage
+          # set_deployment_rules.py resolves the lakehouse + semantic model IDs by name
+          # at runtime from the target workspace, so only the workspace id is needed.
+          TARGET_WORKSPACE_ID: ${{ secrets.FABRIC_UAT_WORKSPACE_ID }}
+        run: |
+          python scripts/set_deployment_rules.py
+
+      - name: Run UAT tests
+        env:
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          FABRIC_UAT_WORKSPACE_ID: ${{ secrets.FABRIC_UAT_WORKSPACE_ID }}
+        run: |
+          python scripts/run_uat_tests.py
+        # Script exits nonzero on test failure, blocking promotion
+
+      - name: Report success
+        run: |
+          echo "✅ UAT deployment complete and tests passed"

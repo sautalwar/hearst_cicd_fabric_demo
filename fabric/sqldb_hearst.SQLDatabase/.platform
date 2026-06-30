@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SQLDatabase",
+    "displayName": "sqldb_hearst"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "d8f2a5c6-4567-89ab-cdef-012345678901"
+  }
+}

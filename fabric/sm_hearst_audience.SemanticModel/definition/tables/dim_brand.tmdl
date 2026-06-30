@@ -1,0 +1,36 @@
+/// dim_brand: Hearst digital brand dimension (Cosmopolitan, Esquire, etc.)
+table dim_brand
+	lineageTag: 00000000-0000-0000-0000-000000000010
+
+	column brand_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 00000000-0000-0000-0000-000000000011
+		sourceColumn: brand_key
+		summarizeBy: none
+
+	column brand_name
+		dataType: string
+		lineageTag: 00000000-0000-0000-0000-000000000012
+		sourceColumn: brand_name
+		summarizeBy: none
+
+	column brand_category
+		dataType: string
+		lineageTag: 00000000-0000-0000-0000-000000000013
+		sourceColumn: brand_category
+		summarizeBy: none
+
+	column region
+		dataType: string
+		lineageTag: 00000000-0000-0000-0000-000000000014
+		sourceColumn: region
+		summarizeBy: none
+
+	partition dim_brand = entity
+		mode: directLake
+		source
+			entityName: dim_brand
+			schemaName: gold
+			expressionSource: 'DirectLake-lh_hearst_gold'
+

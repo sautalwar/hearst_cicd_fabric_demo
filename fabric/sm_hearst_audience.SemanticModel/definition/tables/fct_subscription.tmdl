@@ -1,0 +1,112 @@
+/// fct_subscription: Subscriber activity, churn, and MRR by date/brand/subscriber
+table fct_subscription
+	lineageTag: 00000000-0000-0000-0000-000000000070
+
+	/// Foreign Keys
+	column date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 00000000-0000-0000-0000-000000000071
+		sourceColumn: date_key
+		summarizeBy: none
+
+	column brand_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 00000000-0000-0000-0000-000000000072
+		sourceColumn: brand_key
+		summarizeBy: none
+
+	column subscriber_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 00000000-0000-0000-0000-000000000073
+		sourceColumn: subscriber_key
+		summarizeBy: none
+
+	/// Flags and Metrics
+	column active_flag
+		dataType: int64
+		formatString: 0
+		lineageTag: 00000000-0000-0000-0000-000000000074
+		sourceColumn: active_flag
+		summarizeBy: none
+
+	column new_flag
+		dataType: int64
+		formatString: 0
+		lineageTag: 00000000-0000-0000-0000-000000000075
+		sourceColumn: new_flag
+		summarizeBy: none
+
+	column churned_flag
+		dataType: int64
+		formatString: 0
+		lineageTag: 00000000-0000-0000-0000-000000000076
+		sourceColumn: churned_flag
+		summarizeBy: none
+
+	column mrr
+		dataType: decimal
+		formatString: \$#,##0.00;(\$#,##0.00);\$#,##0.00
+		lineageTag: 00000000-0000-0000-0000-000000000077
+		sourceColumn: mrr
+		summarizeBy: sum
+
+	/// ─────────────────────────────────────────────────────────────────────
+	/// SUBSCRIPTION MEASURES
+	/// ─────────────────────────────────────────────────────────────────────
+
+	measure 'Active Subscribers' = 
+		CALCULATE(
+		    DISTINCTCOUNT(fct_subscription[subscriber_key]),
+		    fct_subscription[active_flag] = 1
+		)
+		formatString: #,##0
+		lineageTag: 00000000-0000-0000-0000-000000000078
+
+	measure 'New Subscribers' = 
+		CALCULATE(
+		    COUNTROWS(fct_subscription),
+		    fct_subscription[new_flag] = 1
+		)
+		formatString: #,##0
+		lineageTag: 00000000-0000-0000-0000-000000000079
+
+	measure 'Churned Subscribers' = 
+		CALCULATE(
+		    COUNTROWS(fct_subscription),
+		    fct_subscription[churned_flag] = 1
+		)
+		formatString: #,##0
+		lineageTag: 00000000-0000-0000-0000-00000000007a
+
+	measure 'Churn Rate %' = 
+		DIVIDE(
+		    [Churned Subscribers],
+		    [Active Subscribers],
+		    0
+		) * 100
+		formatString: 0.00\%;-0.00\%;0.00\%
+		lineageTag: 00000000-0000-0000-0000-00000000007b
+
+	measure MRR = SUM(fct_subscription[mrr])
+		formatString: \$#,##0;(\$#,##0);\$#,##0
+		lineageTag: 00000000-0000-0000-0000-00000000007c
+
+	measure ARPU = 
+		DIVIDE(
+		    [MRR],
+		    [Active Subscribers],
+		    0
+		)
+		formatString: \$#,##0.00;(\$#,##0.00);\$#,##0.00
+		lineageTag: 00000000-0000-0000-0000-00000000007d
+
+	partition fct_subscription = entity
+		mode: directLake
+		source
+			entityName: fct_subscription
+			schemaName: gold
+			expressionSource: 'DirectLake-lh_hearst_gold'
+

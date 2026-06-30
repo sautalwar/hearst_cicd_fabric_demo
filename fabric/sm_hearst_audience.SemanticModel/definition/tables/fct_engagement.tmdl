@@ -1,0 +1,90 @@
+/// fct_engagement: Page views, sessions, and time on page by date/brand/content/subscriber/platform
+table fct_engagement
+	lineageTag: 00000000-0000-0000-0000-000000000060
+
+	/// Foreign Keys
+	column date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 00000000-0000-0000-0000-000000000061
+		sourceColumn: date_key
+		summarizeBy: none
+
+	column brand_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 00000000-0000-0000-0000-000000000062
+		sourceColumn: brand_key
+		summarizeBy: none
+
+	column content_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 00000000-0000-0000-0000-000000000063
+		sourceColumn: content_key
+		summarizeBy: none
+
+	column subscriber_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 00000000-0000-0000-0000-000000000064
+		sourceColumn: subscriber_key
+		summarizeBy: none
+
+	column platform_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 00000000-0000-0000-0000-000000000065
+		sourceColumn: platform_key
+		summarizeBy: none
+
+	/// Metrics
+	column page_views
+		dataType: int64
+		formatString: #,##0
+		lineageTag: 00000000-0000-0000-0000-000000000066
+		sourceColumn: page_views
+		summarizeBy: sum
+
+	column sessions
+		dataType: int64
+		formatString: #,##0
+		lineageTag: 00000000-0000-0000-0000-000000000067
+		sourceColumn: sessions
+		summarizeBy: sum
+
+	column time_on_page_sec
+		dataType: int64
+		formatString: #,##0
+		lineageTag: 00000000-0000-0000-0000-000000000068
+		sourceColumn: time_on_page_sec
+		summarizeBy: sum
+
+	/// ─────────────────────────────────────────────────────────────────────
+	/// ENGAGEMENT MEASURES
+	/// ─────────────────────────────────────────────────────────────────────
+
+	measure 'Page Views' = SUM(fct_engagement[page_views])
+		formatString: #,##0
+		lineageTag: 00000000-0000-0000-0000-000000000069
+
+	measure Sessions = SUM(fct_engagement[sessions])
+		formatString: #,##0
+		lineageTag: 00000000-0000-0000-0000-00000000006a
+
+	measure 'Avg Time on Page (sec)' = 
+		DIVIDE(
+		    SUM(fct_engagement[time_on_page_sec]),
+		    [Sessions],
+		    0
+		)
+		formatString: #,##0.00
+		lineageTag: 00000000-0000-0000-0000-00000000006b
+
+	partition fct_engagement = entity
+		mode: directLake
+		source
+			entityName: fct_engagement
+			schemaName: gold
+			expressionSource: 'DirectLake-lh_hearst_gold'
+

@@ -1,0 +1,22 @@
+{
+  "schemaEnabled": true,
+  "defaultSchema": "gold",
+  "description": "Hearst Digital Audience & Subscription Analytics — Gold layer star schema optimized for Direct Lake semantic models.",
+  "note": "This lakehouse uses schema-enabled mode with explicit 'gold' schema for all tables. Delta tables are created via PySpark saveAsTable() with schema prefix (e.g., lh_hearst_gold.gold.dim_date). Metadata-only deployment: table definitions are promoted via Fabric Deployment Pipeline, but DATA must be regenerated in each environment (Dev/UAT/Prod) by running the medallion notebooks (bronze → silver → gold).",
+  "directLakeSource": true,
+  "starSchemaOptimized": true,
+  "dimensions": [
+    "dim_date",
+    "dim_brand",
+    "dim_content",
+    "dim_subscriber",
+    "dim_platform",
+    "dim_campaign"
+  ],
+  "facts": [
+    "fct_engagement",
+    "fct_subscription",
+    "fct_ad"
+  ],
+  "dataLoadStrategy": "Run nb_hearst_bronze_ingest → nb_hearst_silver_transform → nb_hearst_gold_build in sequence post-deployment to populate tables in each environment."
+}

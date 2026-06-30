@@ -1,0 +1,124 @@
+name: CI - Validate & Lint
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'fabric/**'
+      - 'tests/**'
+      - 'infra/**'
+      - '.github/workflows/**'
+
+jobs:
+  validate:
+    name: Validate Terraform & Fabric Items
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '~> 1.6'
+
+      - name: Terraform Format Check
+        working-directory: ./infra
+        run: terraform fmt -check -recursive
+
+      - name: Terraform Init (validation mode)
+        working-directory: ./infra
+        run: terraform init -backend=false
+
+      - name: Terraform Validate
+        working-directory: ./infra
+        run: terraform validate
+
+      # Optional: terraform plan (requires credentials; enable if you have OIDC or SP auth)
+      # - name: Terraform Plan
+      #   working-directory: ./infra
+      #   env:
+      #     ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      #     ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      #     ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      #     ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      #   run: terraform plan -no-color
+
+  lint-notebooks:
+    name: Lint Notebooks & Python
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install linting tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install nbqa flake8 black
+
+      - name: Lint notebooks with flake8
+        run: |
+          if [ -d "fabric" ]; then
+            nbqa flake8 fabric/ --extend-ignore=E501,W503
+          fi
+          if [ -d "tests" ]; then
+            nbqa flake8 tests/ --extend-ignore=E501,W503
+          fi
+
+      - name: Check notebook formatting with black
+        run: |
+          if [ -d "fabric" ]; then
+            nbqa black fabric/ --check
+          fi
+          if [ -d "tests" ]; then
+            nbqa black tests/ --check
+          fi
+
+  secret-scan:
+    name: Secret Scanning (Gitleaks)
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Gitleaks scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_CONFIG: .gitleaks.toml
+        # Fails the workflow if secrets are detected
+
+  bpa-semantic-model:
+    name: Semantic Model BPA (Best Practice Analyzer)
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install Tabular Editor 2 CLI
+        run: |
+          wget -q https://github.com/TabularEditor/TabularEditor/releases/download/2.17.3/TabularEditor.Portable.zip
+          unzip -q TabularEditor.Portable.zip -d te2
+          chmod +x te2/TabularEditor.exe
+      
+      - name: Run BPA on semantic model TMDL
+        run: |
+          # Run Tabular Editor BPA against the TMDL semantic model using the rules in tests/semantic_model/bpa_rules.json
+          # Tabular Editor CLI: TE2.exe <model-path> -BPA <rules-file> [-BPAIgnore <pattern>]
+          # Note: Requires mono on Linux for .NET Framework exe
+          sudo apt-get update -qq
+          sudo apt-get install -y mono-complete
+          mono te2/TabularEditor.exe "fabric/sm_hearst_audience.SemanticModel" \
+            -BPA "tests/semantic_model/bpa_rules.json" \
+            -V
+        # Exit code: 0=all rules passed, nonzero=violations found

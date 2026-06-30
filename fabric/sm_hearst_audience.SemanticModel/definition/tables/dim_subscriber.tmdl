@@ -1,0 +1,42 @@
+/// dim_subscriber: Subscriber dimension
+table dim_subscriber
+	lineageTag: 00000000-0000-0000-0000-000000000030
+
+	column subscriber_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 00000000-0000-0000-0000-000000000031
+		sourceColumn: subscriber_key
+		summarizeBy: none
+
+	column subscriber_id
+		dataType: string
+		lineageTag: 00000000-0000-0000-0000-000000000032
+		sourceColumn: subscriber_id
+		summarizeBy: none
+
+	column subscriber_tier
+		dataType: string
+		lineageTag: 00000000-0000-0000-0000-000000000033
+		sourceColumn: subscriber_tier
+		summarizeBy: none
+
+	column acquisition_channel
+		dataType: string
+		lineageTag: 00000000-0000-0000-0000-000000000034
+		sourceColumn: acquisition_channel
+		summarizeBy: none
+
+	column country
+		dataType: string
+		lineageTag: 00000000-0000-0000-0000-000000000035
+		sourceColumn: country
+		summarizeBy: none
+
+	partition dim_subscriber = entity
+		mode: directLake
+		source
+			entityName: dim_subscriber
+			schemaName: gold
+			expressionSource: 'DirectLake-lh_hearst_gold'
+

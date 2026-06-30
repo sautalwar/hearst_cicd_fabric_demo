@@ -1,0 +1,77 @@
+/// dim_date: Date dimension for time-based analysis
+table dim_date
+	lineageTag: 00000000-0000-0000-0000-000000000001
+
+	column date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 00000000-0000-0000-0000-000000000002
+		sourceColumn: date_key
+		summarizeBy: none
+
+	column full_date
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 00000000-0000-0000-0000-000000000003
+		sourceColumn: full_date
+		summarizeBy: none
+
+	column year
+		dataType: int64
+		formatString: 0
+		lineageTag: 00000000-0000-0000-0000-000000000004
+		sourceColumn: year
+		summarizeBy: none
+
+	column quarter
+		dataType: int64
+		formatString: 0
+		lineageTag: 00000000-0000-0000-0000-000000000005
+		sourceColumn: quarter
+		summarizeBy: none
+
+	column month
+		dataType: int64
+		formatString: 0
+		lineageTag: 00000000-0000-0000-0000-000000000006
+		sourceColumn: month
+		summarizeBy: none
+
+	column month_name
+		dataType: string
+		lineageTag: 00000000-0000-0000-0000-000000000007
+		sourceColumn: month_name
+		summarizeBy: none
+
+	column day_of_month
+		dataType: int64
+		formatString: 0
+		lineageTag: 00000000-0000-0000-0000-000000000008
+		sourceColumn: day_of_month
+		summarizeBy: none
+
+	column day_of_week
+		dataType: int64
+		formatString: 0
+		lineageTag: 00000000-0000-0000-0000-000000000009
+		sourceColumn: day_of_week
+		summarizeBy: none
+
+	column day_name
+		dataType: string
+		lineageTag: 00000000-0000-0000-0000-00000000000a
+		sourceColumn: day_name
+		summarizeBy: none
+
+	/// Direct Lake partition - points to gold.dim_date in lh_hearst_gold lakehouse
+	/// TODO: Verify the entityName matches your lakehouse table name (gold.dim_date)
+	partition dim_date = entity
+		mode: directLake
+		source
+			entityName: dim_date
+			schemaName: gold
+			/// IMPORTANT: The expression below is a placeholder. In Power BI Desktop,
+			/// use the lakehouse connector to establish the connection properly.
+			/// TODO: Update with actual lakehouse SQL endpoint connection
+			expressionSource: 'DirectLake-lh_hearst_gold'
+

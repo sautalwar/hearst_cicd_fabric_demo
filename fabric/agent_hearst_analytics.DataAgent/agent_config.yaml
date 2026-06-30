@@ -1,0 +1,141 @@
+# Hearst Digital Analytics Data Agent Configuration
+# ─────────────────────────────────────────────────────────────────────────────
+# This data agent is grounded exclusively on the 'sm_hearst_audience' semantic
+# model and provides conversational access to engagement, subscription, and
+# advertising metrics for Hearst's digital brands.
+# ─────────────────────────────────────────────────────────────────────────────
+
+name: "Hearst Analytics Assistant"
+type: "data_agent"
+version: "1.0"
+
+# Semantic Model Binding
+grounding:
+  semantic_model: "sm_hearst_audience"
+  workspace: "Dev"  # Update with actual workspace name/ID during deployment
+  description: "Hearst Digital Audience & Subscription Analytics"
+
+# Agent Instructions
+instructions: |
+  You are the Hearst Analytics Assistant, an AI agent grounded on the Hearst
+  Digital Audience & Subscription Analytics semantic model. Your role is to
+  answer questions about:
+  
+  • **Engagement**: Page views, sessions, average time on page across digital properties
+  • **Subscriptions**: Active subscribers, new signups, churn, MRR (Monthly Recurring Revenue), ARPU
+  • **Advertising**: Ad impressions, clicks, revenue, CTR (click-through rate), eCPM
+  
+  You can slice and dice metrics by:
+  • Date (year, quarter, month, day)
+  • Brand (Cosmopolitan, Esquire, Harper's Bazaar, etc.)
+  • Content (article sections, authors, content types)
+  • Subscriber (tier, acquisition channel, country)
+  • Platform (Web, iOS, Android)
+  • Campaign (for advertising)
+  
+  Always provide clear, data-driven answers with appropriate context. When showing
+  trends, call out notable changes. For subscription metrics, remember that churn
+  is a critical KPI. For advertising, eCPM (effective cost per mille) is the key
+  monetization metric.
+  
+  If a question cannot be answered with the available data, suggest alternative
+  queries the user might find helpful.
+
+# Measure Glossary (for agent context)
+measures:
+  engagement:
+    - name: "Page Views"
+      description: "Total page views across all digital properties"
+      calculation: "SUM(fct_engagement[page_views])"
+      format: "#,##0"
+    - name: "Sessions"
+      description: "Total user sessions"
+      calculation: "SUM(fct_engagement[sessions])"
+      format: "#,##0"
+    - name: "Avg Time on Page (sec)"
+      description: "Average time spent on page per session"
+      calculation: "DIVIDE(SUM(fct_engagement[time_on_page_sec]), [Sessions])"
+      format: "#,##0.00"
+  
+  subscription:
+    - name: "Active Subscribers"
+      description: "Count of distinct active subscribers"
+      calculation: "CALCULATE(DISTINCTCOUNT(fct_subscription[subscriber_key]), fct_subscription[active_flag]=1)"
+      format: "#,##0"
+    - name: "New Subscribers"
+      description: "Count of new subscriptions in the period"
+      calculation: "CALCULATE(COUNTROWS(fct_subscription), fct_subscription[new_flag]=1)"
+      format: "#,##0"
+    - name: "Churned Subscribers"
+      description: "Count of churned subscriptions in the period"
+      calculation: "CALCULATE(COUNTROWS(fct_subscription), fct_subscription[churned_flag]=1)"
+      format: "#,##0"
+    - name: "Churn Rate %"
+      description: "Percentage of active subscribers who churned"
+      calculation: "DIVIDE([Churned Subscribers], [Active Subscribers]) * 100"
+      format: "0.00%"
+    - name: "MRR"
+      description: "Monthly Recurring Revenue"
+      calculation: "SUM(fct_subscription[mrr])"
+      format: "$#,##0"
+    - name: "ARPU"
+      description: "Average Revenue Per User"
+      calculation: "DIVIDE([MRR], [Active Subscribers])"
+      format: "$#,##0.00"
+  
+  advertising:
+    - name: "Ad Revenue"
+      description: "Total advertising revenue"
+      calculation: "SUM(fct_ad[ad_revenue])"
+      format: "$#,##0"
+    - name: "Ad Impressions"
+      description: "Total ad impressions served"
+      calculation: "SUM(fct_ad[impressions])"
+      format: "#,##0"
+    - name: "Ad Clicks"
+      description: "Total ad clicks"
+      calculation: "SUM(fct_ad[clicks])"
+      format: "#,##0"
+    - name: "CTR %"
+      description: "Click-through rate (clicks / impressions)"
+      calculation: "DIVIDE([Ad Clicks], [Ad Impressions]) * 100"
+      format: "0.00%"
+    - name: "eCPM"
+      description: "Effective cost per thousand impressions"
+      calculation: "DIVIDE([Ad Revenue], [Ad Impressions]) * 1000"
+      format: "$#,##0.00"
+
+# Example Questions (for agent training / UI suggestions)
+example_questions:
+  - question: "What was Cosmopolitan's churn rate last month?"
+    explanation: "Filters to Cosmopolitan brand, most recent month, returns Churn Rate % measure"
+    
+  - question: "Show me the top 5 content sections by page views this quarter"
+    explanation: "Groups by dim_content[section], filters to current quarter, orders by Page Views descending, top 5"
+    
+  - question: "What is the MRR trend over the last 6 months?"
+    explanation: "Time-series of MRR measure, grouped by month, last 6 months"
+    
+  - question: "Compare eCPM across iOS, Android, and Web platforms"
+    explanation: "Groups by dim_platform[platform_name], calculates eCPM for each"
+    
+  - question: "How many new subscribers did we acquire through each channel in Q1?"
+    explanation: "Filters to Q1, groups by dim_subscriber[acquisition_channel], sums New Subscribers measure"
+    
+  - question: "Which brands have the highest ARPU?"
+    explanation: "Groups by dim_brand[brand_name], calculates ARPU, orders descending"
+
+# Deployment Settings
+deployment:
+  refresh_schedule: "Daily at 6:00 AM UTC"
+  data_source: "lh_hearst_gold (gold schema, Direct Lake)"
+  requires_rls: false  # Row-level security not configured in this version
+  notes: |
+    This data agent definition is a template. Actual deployment to Fabric requires:
+    1. Creating the DataAgent item via Fabric REST API or Portal
+    2. Binding to the deployed sm_hearst_audience semantic model in the target workspace
+    3. Configuring authentication and permissions (agent service principal or user delegation)
+    
+    Reference: Microsoft Learn - "Create a data agent in Fabric"
+    https://learn.microsoft.com/fabric/data-science/data-agents-overview
+

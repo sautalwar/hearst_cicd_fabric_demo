@@ -1,0 +1,48 @@
+/// dim_content: Content dimension (articles, sections, authors)
+table dim_content
+	lineageTag: 00000000-0000-0000-0000-000000000020
+
+	column content_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 00000000-0000-0000-0000-000000000021
+		sourceColumn: content_key
+		summarizeBy: none
+
+	column content_id
+		dataType: string
+		lineageTag: 00000000-0000-0000-0000-000000000022
+		sourceColumn: content_id
+		summarizeBy: none
+
+	column title
+		dataType: string
+		lineageTag: 00000000-0000-0000-0000-000000000023
+		sourceColumn: title
+		summarizeBy: none
+
+	column section
+		dataType: string
+		lineageTag: 00000000-0000-0000-0000-000000000024
+		sourceColumn: section
+		summarizeBy: none
+
+	column author
+		dataType: string
+		lineageTag: 00000000-0000-0000-0000-000000000025
+		sourceColumn: author
+		summarizeBy: none
+
+	column content_type
+		dataType: string
+		lineageTag: 00000000-0000-0000-0000-000000000026
+		sourceColumn: content_type
+		summarizeBy: none
+
+	partition dim_content = entity
+		mode: directLake
+		source
+			entityName: dim_content
+			schemaName: gold
+			expressionSource: 'DirectLake-lh_hearst_gold'
+

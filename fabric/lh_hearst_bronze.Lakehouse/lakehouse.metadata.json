@@ -1,0 +1,16 @@
+{
+  "description": "Bronze layer lakehouse for Hearst ingestion (schema-enabled)",
+  "schemaEnabled": true,
+  "defaultSchema": "bronze",
+  "notes": [
+    "SCAFFOLD — Real Git sync will regenerate/refine this metadata.",
+    "⚠️ CRITICAL: Fabric Deployment Pipelines move METADATA, not DATA.",
+    "Tables, rows, and Delta files are NOT promoted between stages.",
+    "Each environment (DEV/UAT/PROD) must create its own schema and seed data:",
+    "  - Via ingestion notebooks (executed per-stage after deployment)",
+    "  - Via lakehouse shortcuts to stage-specific ADLS/OneLake paths",
+    "  - Via T-SQL CREATE TABLE scripts in a post-deploy step",
+    "Expected schemas: bronze (for raw ingestion), silver (for cleansed data)",
+    "Expected tables: bronze.sample_events (see nb_hearst_ingest)"
+  ]
+}

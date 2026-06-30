@@ -1,0 +1,36 @@
+/// dim_campaign: Marketing campaign dimension
+table dim_campaign
+	lineageTag: 00000000-0000-0000-0000-000000000050
+
+	column campaign_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 00000000-0000-0000-0000-000000000051
+		sourceColumn: campaign_key
+		summarizeBy: none
+
+	column campaign_name
+		dataType: string
+		lineageTag: 00000000-0000-0000-0000-000000000052
+		sourceColumn: campaign_name
+		summarizeBy: none
+
+	column campaign_type
+		dataType: string
+		lineageTag: 00000000-0000-0000-0000-000000000053
+		sourceColumn: campaign_type
+		summarizeBy: none
+
+	column advertiser
+		dataType: string
+		lineageTag: 00000000-0000-0000-0000-000000000054
+		sourceColumn: advertiser
+		summarizeBy: none
+
+	partition dim_campaign = entity
+		mode: directLake
+		source
+			entityName: dim_campaign
+			schemaName: gold
+			expressionSource: 'DirectLake-lh_hearst_gold'
+

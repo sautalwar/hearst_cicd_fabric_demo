@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "nb_hearst_gold_build"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "c3d4e5f6-a7b8-4c9d-0e1f-2a3b4c5d6e7f"
+  }
+}

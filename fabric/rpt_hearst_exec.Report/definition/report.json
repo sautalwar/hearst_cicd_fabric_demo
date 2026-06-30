@@ -1,0 +1,155 @@
+{
+  "name": "00000000-0000-0000-0000-000000000000",
+  "id": "00000000-0000-0000-0000-000000000000",
+  "config": "{\"version\":\"5.52\",\"themeCollection\":{\"baseTheme\":{\"name\":\"CY24SU09\",\"version\":\"5.52\",\"type\":2}},\"activeSectionIndex\":0,\"defaultDrillFilterOtherVisuals\":true,\"navContentPaneEnabled\":false,\"settings\":{\"useNewFilterPaneExperience\":true,\"allowChangeFilterTypes\":true,\"useStylableVisualContainerHeader\":true}}",
+  "layoutOptimization": 0,
+  "resourcePackages": [
+    {
+      "resourcePackage": {
+        "name": "SharedResources",
+        "type": 1,
+        "items": [],
+        "disabled": false
+      }
+    }
+  ],
+  "sections": [
+    {
+      "name": "ReportSection",
+      "displayName": "Executive Dashboard",
+      "filters": "[]",
+      "ordinal": 0,
+      "visualContainers": [
+        {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "width": 250,
+          "height": 150,
+          "config": "{\"name\":\"card_page_views\",\"layouts\":[{\"id\":0,\"position\":{\"x\":0,\"y\":0,\"z\":0,\"width\":250,\"height\":150}}],\"singleVisual\":{\"visualType\":\"card\",\"projections\":{\"Values\":[{\"queryRef\":\"fct_engagement.Page Views\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"f\",\"Entity\":\"fct_engagement\",\"Type\":0}],\"Select\":[{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"f\"}},\"Property\":\"Page Views\"},\"Name\":\"fct_engagement.Page Views\"}]},\"vcObjects\":{\"title\":[{\"properties\":{\"text\":{\"expr\":{\"Literal\":{\"Value\":\"'Page Views'\"}}}}}]}}}",
+          "filters": "[]",
+          "dataTransforms": "{\"projectionOrdering\":{\"Values\":[0]},\"projectionActiveItems\":{\"Values\":[{\"queryRef\":\"fct_engagement.Page Views\"}]}}",
+          "height": 150,
+          "width": 250,
+          "y": 0,
+          "z": 0
+        },
+        {
+          "x": 260,
+          "y": 0,
+          "z": 1,
+          "width": 250,
+          "height": 150,
+          "config": "{\"name\":\"card_active_subs\",\"layouts\":[{\"id\":0,\"position\":{\"x\":260,\"y\":0,\"z\":1,\"width\":250,\"height\":150}}],\"singleVisual\":{\"visualType\":\"card\",\"projections\":{\"Values\":[{\"queryRef\":\"fct_subscription.Active Subscribers\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"f\",\"Entity\":\"fct_subscription\",\"Type\":0}],\"Select\":[{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"f\"}},\"Property\":\"Active Subscribers\"},\"Name\":\"fct_subscription.Active Subscribers\"}]},\"vcObjects\":{\"title\":[{\"properties\":{\"text\":{\"expr\":{\"Literal\":{\"Value\":\"'Active Subscribers'\"}}}}}]}}}",
+          "filters": "[]",
+          "dataTransforms": "{\"projectionOrdering\":{\"Values\":[0]},\"projectionActiveItems\":{\"Values\":[{\"queryRef\":\"fct_subscription.Active Subscribers\"}]}}",
+          "height": 150,
+          "width": 250,
+          "y": 0,
+          "z": 1
+        },
+        {
+          "x": 520,
+          "y": 0,
+          "z": 2,
+          "width": 250,
+          "height": 150,
+          "config": "{\"name\":\"card_mrr\",\"layouts\":[{\"id\":0,\"position\":{\"x\":520,\"y\":0,\"z\":2,\"width\":250,\"height\":150}}],\"singleVisual\":{\"visualType\":\"card\",\"projections\":{\"Values\":[{\"queryRef\":\"fct_subscription.MRR\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"f\",\"Entity\":\"fct_subscription\",\"Type\":0}],\"Select\":[{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"f\"}},\"Property\":\"MRR\"},\"Name\":\"fct_subscription.MRR\"}]},\"vcObjects\":{\"title\":[{\"properties\":{\"text\":{\"expr\":{\"Literal\":{\"Value\":\"'MRR'\"}}}}}]}}}",
+          "filters": "[]",
+          "dataTransforms": "{\"projectionOrdering\":{\"Values\":[0]},\"projectionActiveItems\":{\"Values\":[{\"queryRef\":\"fct_subscription.MRR\"}]}}",
+          "height": 150,
+          "width": 250,
+          "y": 0,
+          "z": 2
+        },
+        {
+          "x": 780,
+          "y": 0,
+          "z": 3,
+          "width": 250,
+          "height": 150,
+          "config": "{\"name\":\"card_churn\",\"layouts\":[{\"id\":0,\"position\":{\"x\":780,\"y\":0,\"z\":3,\"width\":250,\"height\":150}}],\"singleVisual\":{\"visualType\":\"card\",\"projections\":{\"Values\":[{\"queryRef\":\"fct_subscription.Churn Rate %\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"f\",\"Entity\":\"fct_subscription\",\"Type\":0}],\"Select\":[{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"f\"}},\"Property\":\"Churn Rate %\"},\"Name\":\"fct_subscription.Churn Rate %\"}]},\"vcObjects\":{\"title\":[{\"properties\":{\"text\":{\"expr\":{\"Literal\":{\"Value\":\"'Churn Rate %'\"}}}}}]}}}",
+          "filters": "[]",
+          "dataTransforms": "{\"projectionOrdering\":{\"Values\":[0]},\"projectionActiveItems\":{\"Values\":[{\"queryRef\":\"fct_subscription.Churn Rate %\"}]}}",
+          "height": 150,
+          "width": 250,
+          "y": 0,
+          "z": 3
+        },
+        {
+          "x": 1040,
+          "y": 0,
+          "z": 4,
+          "width": 250,
+          "height": 150,
+          "config": "{\"name\":\"card_ad_revenue\",\"layouts\":[{\"id\":0,\"position\":{\"x\":1040,\"y\":0,\"z\":4,\"width\":250,\"height\":150}}],\"singleVisual\":{\"visualType\":\"card\",\"projections\":{\"Values\":[{\"queryRef\":\"fct_ad.Ad Revenue\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"f\",\"Entity\":\"fct_ad\",\"Type\":0}],\"Select\":[{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"f\"}},\"Property\":\"Ad Revenue\"},\"Name\":\"fct_ad.Ad Revenue\"}]},\"vcObjects\":{\"title\":[{\"properties\":{\"text\":{\"expr\":{\"Literal\":{\"Value\":\"'Ad Revenue'\"}}}}}]}}}",
+          "filters": "[]",
+          "dataTransforms": "{\"projectionOrdering\":{\"Values\":[0]},\"projectionActiveItems\":{\"Values\":[{\"queryRef\":\"fct_ad.Ad Revenue\"}]}}",
+          "height": 150,
+          "width": 250,
+          "y": 0,
+          "z": 4
+        },
+        {
+          "x": 1300,
+          "y": 0,
+          "z": 5,
+          "width": 250,
+          "height": 150,
+          "config": "{\"name\":\"card_ecpm\",\"layouts\":[{\"id\":0,\"position\":{\"x\":1300,\"y\":0,\"z\":5,\"width\":250,\"height\":150}}],\"singleVisual\":{\"visualType\":\"card\",\"projections\":{\"Values\":[{\"queryRef\":\"fct_ad.eCPM\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"f\",\"Entity\":\"fct_ad\",\"Type\":0}],\"Select\":[{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"f\"}},\"Property\":\"eCPM\"},\"Name\":\"fct_ad.eCPM\"}]},\"vcObjects\":{\"title\":[{\"properties\":{\"text\":{\"expr\":{\"Literal\":{\"Value\":\"'eCPM'\"}}}}}]}}}",
+          "filters": "[]",
+          "dataTransforms": "{\"projectionOrdering\":{\"Values\":[0]},\"projectionActiveItems\":{\"Values\":[{\"queryRef\":\"fct_ad.eCPM\"}]}}",
+          "height": 150,
+          "width": 250,
+          "y": 0,
+          "z": 5
+        },
+        {
+          "x": 0,
+          "y": 160,
+          "z": 6,
+          "width": 800,
+          "height": 300,
+          "config": "{\"name\":\"line_page_views_trend\",\"layouts\":[{\"id\":0,\"position\":{\"x\":0,\"y\":160,\"z\":6,\"width\":800,\"height\":300}}],\"singleVisual\":{\"visualType\":\"lineChart\",\"projections\":{\"Category\":[{\"queryRef\":\"dim_date.month_name\"}],\"Y\":[{\"queryRef\":\"fct_engagement.Page Views\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"d\",\"Entity\":\"dim_date\",\"Type\":0},{\"Name\":\"f\",\"Entity\":\"fct_engagement\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"d\"}},\"Property\":\"month_name\"},\"Name\":\"dim_date.month_name\"},{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"f\"}},\"Property\":\"Page Views\"},\"Name\":\"fct_engagement.Page Views\"}]},\"vcObjects\":{\"title\":[{\"properties\":{\"text\":{\"expr\":{\"Literal\":{\"Value\":\"'Page Views Trend by Month'\"}}}}}]}}}",
+          "filters": "[]",
+          "dataTransforms": "{\"projectionOrdering\":{\"Category\":[0],\"Y\":[0]},\"projectionActiveItems\":{\"Category\":[{\"queryRef\":\"dim_date.month_name\"}],\"Y\":[{\"queryRef\":\"fct_engagement.Page Views\"}]}}",
+          "height": 300,
+          "width": 800,
+          "y": 160,
+          "z": 6
+        },
+        {
+          "x": 810,
+          "y": 160,
+          "z": 7,
+          "width": 400,
+          "height": 300,
+          "config": "{\"name\":\"column_sub_funnel\",\"layouts\":[{\"id\":0,\"position\":{\"x\":810,\"y\":160,\"z\":7,\"width\":400,\"height\":300}}],\"singleVisual\":{\"visualType\":\"clusteredColumnChart\",\"projections\":{\"Category\":[{\"queryRef\":\"dim_date.month_name\"}],\"Y\":[{\"queryRef\":\"fct_subscription.New Subscribers\"},{\"queryRef\":\"fct_subscription.Churned Subscribers\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"d\",\"Entity\":\"dim_date\",\"Type\":0},{\"Name\":\"f\",\"Entity\":\"fct_subscription\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"d\"}},\"Property\":\"month_name\"},\"Name\":\"dim_date.month_name\"},{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"f\"}},\"Property\":\"New Subscribers\"},\"Name\":\"fct_subscription.New Subscribers\"},{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"f\"}},\"Property\":\"Churned Subscribers\"},\"Name\":\"fct_subscription.Churned Subscribers\"}]},\"vcObjects\":{\"title\":[{\"properties\":{\"text\":{\"expr\":{\"Literal\":{\"Value\":\"'New vs Churned Subscribers'\"}}}}}]}}}",
+          "filters": "[]",
+          "dataTransforms": "{\"projectionOrdering\":{\"Category\":[0],\"Y\":[0,1]},\"projectionActiveItems\":{\"Category\":[{\"queryRef\":\"dim_date.month_name\"}],\"Y\":[{\"queryRef\":\"fct_subscription.New Subscribers\"},{\"queryRef\":\"fct_subscription.Churned Subscribers\"}]}}",
+          "height": 300,
+          "width": 400,
+          "y": 160,
+          "z": 7
+        },
+        {
+          "x": 1220,
+          "y": 160,
+          "z": 8,
+          "width": 330,
+          "height": 300,
+          "config": "{\"name\":\"bar_brand_breakdown\",\"layouts\":[{\"id\":0,\"position\":{\"x\":1220,\"y\":160,\"z\":8,\"width\":330,\"height\":300}}],\"singleVisual\":{\"visualType\":\"barChart\",\"projections\":{\"Category\":[{\"queryRef\":\"dim_brand.brand_name\"}],\"Y\":[{\"queryRef\":\"fct_engagement.Page Views\"}]},\"prototypeQuery\":{\"Version\":2,\"From\":[{\"Name\":\"b\",\"Entity\":\"dim_brand\",\"Type\":0},{\"Name\":\"f\",\"Entity\":\"fct_engagement\",\"Type\":0}],\"Select\":[{\"Column\":{\"Expression\":{\"SourceRef\":{\"Source\":\"b\"}},\"Property\":\"brand_name\"},\"Name\":\"dim_brand.brand_name\"},{\"Measure\":{\"Expression\":{\"SourceRef\":{\"Source\":\"f\"}},\"Property\":\"Page Views\"},\"Name\":\"fct_engagement.Page Views\"}]},\"vcObjects\":{\"title\":[{\"properties\":{\"text\":{\"expr\":{\"Literal\":{\"Value\":\"'Top Brands by Page Views'\"}}}}}]}}}",
+          "filters": "[]",
+          "dataTransforms": "{\"projectionOrdering\":{\"Category\":[0],\"Y\":[0]},\"projectionActiveItems\":{\"Category\":[{\"queryRef\":\"dim_brand.brand_name\"}],\"Y\":[{\"queryRef\":\"fct_engagement.Page Views\"}]}}",
+          "height": 300,
+          "width": 330,
+          "y": 160,
+          "z": 8
+        }
+      ],
+      "height": 600,
+      "width": 1600,
+      "displayOption": 1
+    }
+  ]
+}

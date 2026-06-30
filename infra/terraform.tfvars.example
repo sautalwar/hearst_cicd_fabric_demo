@@ -1,0 +1,42 @@
+# Example terraform.tfvars (copy to terraform.tfvars and fill with real values)
+# NEVER commit the real terraform.tfvars to Git (it should be in .gitignore)
+
+# --- Azure subscription and identity ---
+subscription_id   = "00000000-0000-0000-0000-000000000000" # Replace with your subscription ID
+tenant_id         = "00000000-0000-0000-0000-000000000000" # Replace with your tenant ID
+admin_object_id   = "00000000-0000-0000-0000-000000000000" # Replace with your user/group object ID
+sp_object_id      = "00000000-0000-0000-0000-000000000000" # Populated after SP creation (or use data source)
+
+# --- Resource names and location ---
+location            = "eastus"
+resource_group_name = "rg-hearst-fabric-cicd"
+key_vault_name      = "kv-hearst-fabric-demo" # Must be globally unique; adjust if taken
+
+# --- Fabric capacity ---
+# Behavior:
+#   * Leave BOTH blank            -> Terraform CREATES a new F-SKU capacity (capacity_sku).
+#   * Set existing_capacity_name  -> reuse that EXISTING capacity (looked up by name).
+#   * Set capacity_id             -> bind directly to that Fabric capacity GUID.
+existing_capacity_name = "" # e.g. "Hearst Trial Capacity" to reuse an existing one
+# capacity_id          = "" # advanced: bind directly to a known Fabric capacity GUID
+new_capacity_name      = "caphearstfabricdemo" # used only when creating a new capacity (3-63 lowercase alphanumerics)
+capacity_sku           = "F2"                  # minimum to run this workload; F64+ unlocks Copilot in Fabric
+capacity_admin_members = []                    # e.g. ["admin@contoso.com"] or an SP object id; defaults to the TF runner
+
+# --- Example workload (created by Terraform so you see real items end-to-end) ---
+deploy_example_workload = true
+example_workspace       = "dev"
+
+# --- GitHub integration (OPTIONAL; off by default for a self-contained first run) ---
+enable_git_integration = false # set true once you've created a Fabric Git connection
+github_owner           = "YOUR_GITHUB_ORG_OR_USER"
+github_repo            = "hearst_cicd_fabric_demo"
+github_branch          = "main"
+github_directory       = "/fabric"
+# github_connection_id = "/providers/Microsoft.Fabric/git/connections/github-connection" # required only when enable_git_integration = true
+# github_pat           = "" # Optional; only if not using ConfiguredConnection
+
+# --- Secrets (DO NOT COMMIT REAL VALUES) ---
+# These are populated by the identity.tf output or manually after SP creation
+# fabric_sp_client_id     = ""
+# fabric_sp_client_secret = ""

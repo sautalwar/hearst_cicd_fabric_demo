@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Terraform Run Report - Hearst Fabric CI/CD</title>
+<style>
+  body{margin:0;background:#0f1420;color:#e9eef7;font:15px/1.6 -apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  .wrap{max-width:1000px;margin:0 auto;padding:30px 22px 70px}
+  h1{font-size:25px;margin:0 0 4px}
+  .meta{color:#a3b4cd;font-size:13px;margin-bottom:18px}
+  .cards{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0 8px}
+  .card{flex:1 1 150px;background:#1b2438;border:1px solid #2a3656;border-radius:12px;padding:14px}
+  .card .n{font-size:26px;font-weight:700}
+  .card .l{color:#a3b4cd;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+  .create .n{color:#43d39e} .update .n{color:#ffc24b} .delete .n{color:#ff7a7a} .read .n{color:#5aa9ff}
+  h2{font-size:18px;margin:28px 0 10px;border-bottom:1px solid #2a3656;padding-bottom:6px}
+  .phase{background:#161d2e;border:1px solid #2a3656;border-radius:10px;margin:10px 0;overflow:hidden}
+  .phase h3{margin:0;padding:10px 14px;background:#1b2438;font-size:14px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:7px 12px;border-bottom:1px solid #233049}
+  th{color:#a3b4cd;font-weight:600}
+  code{background:#0c1322;border:1px solid #2a3656;border-radius:4px;padding:1px 6px;color:#bcd2ff;font-size:12px}
+  .pill{font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px}
+  .p-create{color:#43d39e;background:#11271f;border:1px solid #2c5a48}
+  .p-update{color:#ffc24b;background:#241d0e;border:1px solid #5a4a1f}
+  .p-delete{color:#ff7a7a;background:#251111;border:1px solid #5a2c2c}
+  .empty{color:#7d8aa3;font-style:italic;padding:8px 14px}
+  footer{margin-top:30px;color:#7d8aa3;font-size:12px;border-top:1px solid #2a3656;padding-top:14px}
+</style></head><body><div class="wrap">
+<h1>Terraform Run Report</h1>
+<div class="meta">Hearst Fabric CI/CD &middot; generated 2026-06-30 07:26 &middot; source: plan.tfplan (terraform show -json)</div>
+<div class="cards">
+  <div class="card create"><div class="n">25</div><div class="l">to create</div></div>
+  <div class="card update"><div class="n">0</div><div class="l">to change</div></div>
+  <div class="card delete"><div class="n">0</div><div class="l">to destroy</div></div>
+  <div class="card read"><div class="n">1</div><div class="l">data reads</div></div>
+  <div class="card"><div class="n">26</div><div class="l">total tracked</div></div>
+</div>
+<p style="color:#a3b4cd">This report reflects a <strong>plan</strong> (nothing was created). Resources are grouped below in the order Terraform will build them.</p>
+<h2>Deployment order (what runs when)</h2><div class='phase'><h3>Phase 1 - Foundation</h3><table><tr><th>Action</th><th>Type</th><th>Address</th></tr><tr><td><span class='pill p-create'>create</span></td><td><code>azurerm_resource_group</code></td><td>azurerm_resource_group.main</td></tr></table></div><div class='phase'><h3>Phase 2 - Identity (Entra)</h3><table><tr><th>Action</th><th>Type</th><th>Address</th></tr><tr><td><span class='pill p-create'>create</span></td><td><code>azuread_application</code></td><td>azuread_application.fabric_cicd</td></tr><tr><td><span class='pill p-create'>create</span></td><td><code>azuread_application_password</code></td><td>azuread_application_password.fabric_cicd</td></tr><tr><td><span class='pill p-create'>create</span></td><td><code>azuread_service_principal</code></td><td>azuread_service_principal.fabric_cicd</td></tr></table></div><div class='phase'><h3>Phase 3 - Key Vault + RBAC</h3><table><tr><th>Action</th><th>Type</th><th>Address</th></tr><tr><td><span class='pill p-create'>create</span></td><td><code>azurerm_key_vault</code></td><td>azurerm_key_vault.main</td></tr><tr><td><span class='pill p-create'>create</span></td><td><code>azurerm_key_vault_secret</code></td><td>azurerm_key_vault_secret.fabric_sp_client_id</td></tr><tr><td><span class='pill p-create'>create</span></td><td><code>azurerm_key_vault_secret</code></td><td>azurerm_key_vault_secret.fabric_sp_client_secret</td></tr><tr><td><span class='pill p-create'>create</span></td><td><code>azurerm_key_vault_secret</code></td><td>azurerm_key_vault_secret.fabric_tenant_id</td></tr><tr><td><span class='pill p-create'>create</span></td><td><code>azurerm_role_assignment</code></td><td>azurerm_role_assignment.kv_admin_secrets_officer</td></tr><tr><td><span class='pill p-create'>create</span></td><td><code>azurerm_role_assignment</code></td><td>azurerm_role_assignment.kv_sp_secrets_user</td></tr></table></div><div class='phase'><h3>Phase 4 - Fabric capacity</h3><table><tr><th>Action</th><th>Type</th><th>Address</th></tr><tr><td><span class='pill p-create'>create</span></td><td><code>azurerm_fabric_capacity</code></td><td>azurerm_fabric_capacity.new[0]</td></tr></table></div><div class='phase'><h3>Phase 5 - Workspaces + roles</h3><table><tr><th>Action</th><th>Type</th><th>Address</th></tr><tr><td><span class='pill p-create'>create</span></td><td><code>fabric_workspace</code></td><td>fabric_workspace.workspaces["dev"]</td></tr><tr><td><span class='pill p-create'>create</span></td><td><code>fabric_workspace</code></td><td>fabric_workspace.workspaces["prod"]</td></tr><tr><td><span class='pill p-create'>create</span></td><td><code>fabric_workspace</code></td><td>fabric_workspace.workspaces["uat"]</td></tr><tr><td><span class='pill p-create'>create</span></td><td><code>fabric_workspace_role_assignment</code></td><td>fabric_workspace_role_assignment.admin_user["dev"]</td></tr><tr><td><span class='pill p-create'>create</span></td><td><code>fabric_workspace_role_assignment</code></td><td>fabric_workspace_role_assignment.admin_user["prod"]</td></tr><tr><td><span class='pill p-create'>create</span></td><td><code>fabric_workspace_role_assignment</code></td><td>fabric_workspace_role_assignment.admin_user["uat"]</td></tr><tr><td><span class='pill p-create'>create</span></td><td><code>fabric_workspace_role_assignment</code></td><td>fabric_workspace_role_assignment.sp_admin["dev"]</td></tr><tr><td><span class='pill p-create'>create</span></td><td><code>fabric_workspace_role_assignment</code></td><td>fabric_workspace_role_assignment.sp_admin["prod"]</td></tr><tr><td><span class='pill p-create'>create</span></td><td><code>fabric_workspace_role_assignment</code></td><td>fabric_workspace_role_assignment.sp_admin["uat"]</td></tr></table></div><div class='phase'><h3>Phase 6 - Deployment pipeline</h3><table><tr><th>Action</th><th>Type</th><th>Address</th></tr><tr><td><span class='pill p-create'>create</span></td><td><code>fabric_deployment_pipeline</code></td><td>fabric_deployment_pipeline.main</td></tr></table></div><div class='phase'><h3>Phase 7 - Git integration (optional)</h3><div class='empty'>No resources in this phase.</div></div><div class='phase'><h3>Phase 8 - Example workload</h3><table><tr><th>Action</th><th>Type</th><th>Address</th></tr><tr><td><span class='pill p-create'>create</span></td><td><code>fabric_data_pipeline</code></td><td>fabric_data_pipeline.example[0]</td></tr><tr><td><span class='pill p-create'>create</span></td><td><code>fabric_lakehouse</code></td><td>fabric_lakehouse.example[0]</td></tr><tr><td><span class='pill p-create'>create</span></td><td><code>fabric_notebook</code></td><td>fabric_notebook.example[0]</td></tr><tr><td><span class='pill p-create'>create</span></td><td><code>fabric_warehouse</code></td><td>fabric_warehouse.example[0]</td></tr></table></div><h2>Changes (update / replace)</h2><p class='empty'>None.</p><h2>Destroys</h2><p class='empty'>None.</p><footer>Generated by scripts/tf_run_report.ps1 from a terraform plan. A plan makes no changes to your tenant.</footer>
+</div></body></html>

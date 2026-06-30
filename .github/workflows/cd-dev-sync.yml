@@ -1,0 +1,46 @@
+name: CD - Dev Sync (Git → Fabric Dev Workspace)
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'fabric/**'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  sync-dev:
+    name: Update Dev Workspace from Git
+    runs-on: ubuntu-latest
+    environment: dev # GitHub Environment for secret scoping + optional approval
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install -r scripts/requirements.txt
+
+      - name: Mask secrets
+        run: |
+          echo "::add-mask::${{ secrets.AZURE_CLIENT_SECRET }}"
+
+      - name: Update Dev workspace from Git
+        env:
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          FABRIC_DEV_WORKSPACE_ID: ${{ secrets.FABRIC_DEV_WORKSPACE_ID }}
+        run: |
+          python scripts/update_from_git.py
+        # Script exits nonzero on failure, failing the workflow
+
+      - name: Report success
+        run: |
+          echo "✅ Dev workspace synced from GitHub main branch"

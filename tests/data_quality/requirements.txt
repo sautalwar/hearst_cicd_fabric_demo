@@ -1,0 +1,6 @@
+pytest>=8.0.0
+pyodbc>=5.0.0
+requests>=2.31.0
+
+# NOTE: For DAX reconciliation via XMLA endpoint (alternative to Fabric REST API):
+# pyadomd>=1.0.1  # Uncomment if using XMLA/ADOMD.NET instead of REST executeQueries

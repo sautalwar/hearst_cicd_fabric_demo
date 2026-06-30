@@ -1,0 +1,117 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/Analysis-Services/master/BestPracticeRules/BPARules.schema.json",
+  "name": "Hearst Audience & Subscription Model - BPA Ruleset",
+  "description": "Best Practice Analyzer rules for sm_hearst_audience Direct Lake semantic model. Enforces measure format strings, relationship validity, naming conventions, hidden foreign keys, and no unnecessary calculated columns.",
+  "rules": [
+    {
+      "id": "MEASURE_FORMAT_STRING",
+      "name": "Measures must have formatString",
+      "category": "Formatting",
+      "severity": 2,
+      "description": "All measures must declare an explicit formatString to ensure consistent rendering in reports.",
+      "expression": "Model.AllMeasures.Any(current => current.FormatString == null || current.FormatString == \"\")",
+      "fixExpression": null,
+      "compatibility": 1200
+    },
+    {
+      "id": "NO_CALCULATED_COLUMNS_WHERE_MEASURE_SUFFICES",
+      "name": "Avoid calculated columns for simple aggregations",
+      "category": "Performance",
+      "severity": 1,
+      "description": "Calculated columns consume storage and refresh time. If a measure can compute the same result (e.g., SUM, COUNT), prefer the measure.",
+      "expression": "Model.AllColumns.Any(current => current.Type == \"Calculated\" && (current.Expression.Contains(\"SUM(\") || current.Expression.Contains(\"COUNT(\")))",
+      "fixExpression": null,
+      "compatibility": 1200
+    },
+    {
+      "id": "RELATIONSHIPS_VALID",
+      "name": "All relationships must be active and have valid cardinality",
+      "category": "Data Integrity",
+      "severity": 3,
+      "description": "Relationships must be active (not inactive without reason) and declare correct cardinality (one-to-many, many-to-one).",
+      "expression": "Model.Relationships.Any(current => current.IsActive == false && !current.Name.Contains(\"_inactive\"))",
+      "fixExpression": null,
+      "compatibility": 1200
+    },
+    {
+      "id": "NAMING_CONVENTION_FOREIGN_KEYS",
+      "name": "Foreign key columns must end with '_key'",
+      "category": "Naming",
+      "severity": 1,
+      "description": "Dimension surrogate keys (foreign keys in fact tables) must follow the naming pattern *_key for clarity.",
+      "expression": "Model.AllColumns.Any(current => current.IsKey == false && current.Name.Contains(\"key\") && !current.Name.EndsWith(\"_key\"))",
+      "fixExpression": null,
+      "compatibility": 1200
+    },
+    {
+      "id": "NO_INACTIVE_RELATIONSHIP_AMBIGUITY",
+      "name": "Inactive relationships must be intentional",
+      "category": "Data Integrity",
+      "severity": 2,
+      "description": "If a relationship is inactive, the model must document why (e.g., role-playing dimension). Inactive relationships without a clear role create ambiguity.",
+      "expression": "Model.Relationships.Any(current => current.IsActive == false && (current.Annotations[\"InactiveReason\"] == null || current.Annotations[\"InactiveReason\"] == \"\"))",
+      "fixExpression": null,
+      "compatibility": 1200
+    },
+    {
+      "id": "HIDDEN_FOREIGN_KEYS",
+      "name": "Foreign key columns should be hidden",
+      "category": "Usability",
+      "severity": 1,
+      "description": "Surrogate key columns (e.g., date_key, brand_key) used for relationships should be hidden from the user report view; users interact with dimension attributes (e.g., brand_name) instead.",
+      "expression": "Model.AllColumns.Any(current => current.Name.EndsWith(\"_key\") && current.IsHidden == false && current.Table.Name.StartsWith(\"fct_\"))",
+      "fixExpression": "current.IsHidden = true",
+      "compatibility": 1200
+    },
+    {
+      "id": "DIMENSION_TABLES_HAVE_PRIMARY_KEY",
+      "name": "Dimension tables must have a primary key column marked",
+      "category": "Data Integrity",
+      "severity": 2,
+      "description": "Each dimension table (dim_*) must have exactly one column marked as IsKey for referential integrity.",
+      "expression": "Model.Tables.Any(current => current.Name.StartsWith(\"dim_\") && current.Columns.Count(c => c.IsKey) != 1)",
+      "fixExpression": null,
+      "compatibility": 1200
+    },
+    {
+      "id": "NO_ORPHAN_MEASURES",
+      "name": "Measures should belong to fact tables or a dedicated Measures table",
+      "category": "Organization",
+      "severity": 1,
+      "description": "Measures defined on dimension tables can confuse users. Place measures in fact tables or a dedicated 'Measures' table.",
+      "expression": "Model.AllMeasures.Any(current => current.Table.Name.StartsWith(\"dim_\"))",
+      "fixExpression": null,
+      "compatibility": 1200
+    },
+    {
+      "id": "DIRECT_LAKE_PARTITION_MODE",
+      "name": "Tables must use Direct Lake partition mode",
+      "category": "Direct Lake",
+      "severity": 3,
+      "description": "This is a Direct Lake model; all partitions must declare mode: directLake (not import or directQuery).",
+      "expression": "Model.AllPartitions.Any(current => current.Mode != \"DirectLake\")",
+      "fixExpression": null,
+      "compatibility": 1605
+    },
+    {
+      "id": "DIRECT_LAKE_EXPRESSION_SOURCE",
+      "name": "Direct Lake partitions must reference the lakehouse SQL endpoint",
+      "category": "Direct Lake",
+      "severity": 3,
+      "description": "All partitions must set expressionSource to 'DirectLake-lh_hearst_gold' (the lakehouse SQL endpoint binding).",
+      "expression": "Model.AllPartitions.Any(current => current.Mode == \"DirectLake\" && !current.Expression.Contains(\"DirectLake-lh_hearst_gold\"))",
+      "fixExpression": null,
+      "compatibility": 1605
+    },
+    {
+      "id": "MEASURE_AGGREGATION_NOT_NONE",
+      "name": "Measure base columns should have summarizeBy set appropriately",
+      "category": "Performance",
+      "severity": 1,
+      "description": "Columns that are summed in measures (e.g., page_views, mrr) should declare summarizeBy: sum; key columns should declare summarizeBy: none.",
+      "expression": "Model.AllColumns.Any(current => current.DataType == \"Int64\" && current.Name.EndsWith(\"_key\") && current.SummarizeBy != \"None\")",
+      "fixExpression": null,
+      "compatibility": 1200
+    }
+  ]
+}

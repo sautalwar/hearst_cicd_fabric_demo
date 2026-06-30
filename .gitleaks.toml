@@ -1,0 +1,111 @@
+# =============================================================================
+# Gitleaks Configuration for Hearst Fabric CI/CD Demo
+# Purpose: Detect committed secrets in code, Terraform, and config files
+# Owner: Linus (Security/Identity Engineer)
+# =============================================================================
+# Run in CI: gitleaks detect --config .gitleaks.toml --verbose --no-git
+# Pre-commit: gitleaks protect --config .gitleaks.toml --staged
+# =============================================================================
+
+title = "Hearst Fabric CI/CD Secret Scanning"
+
+[extend]
+# Start with the gitleaks default ruleset, then add custom rules below
+useDefault = true
+
+# -----------------------------------------------------------------------------
+# Custom Rules (supplement defaults)
+# -----------------------------------------------------------------------------
+
+[[rules]]
+id = "azure-key-vault-secret-uri"
+description = "Detect Azure Key Vault secret URIs in code"
+regex = '''https://[a-zA-Z0-9-]+\.vault\.azure\.net/secrets/[a-zA-Z0-9-]+/[a-f0-9]{32}'''
+tags = ["azure", "keyvault", "secret"]
+
+[[rules]]
+id = "fabric-workspace-id"
+description = "Fabric workspace IDs (UUIDs) are not secrets, but flag for review if hardcoded"
+regex = '''workspaceId["\s:=]+([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})'''
+tags = ["fabric", "workspace"]
+# Note: Workspace IDs are not sensitive, but hardcoding them bypasses Terraform outputs
+
+[[rules]]
+id = "terraform-sensitive-output"
+description = "Terraform outputs marked sensitive but echoed in scripts"
+regex = '''terraform output .*(secret|password|token|key)'''
+tags = ["terraform", "output"]
+
+[[rules]]
+id = "github-pat-pattern"
+description = "GitHub Personal Access Tokens (classic and fine-grained)"
+regex = '''gh[pousr]_[A-Za-z0-9_]{36,255}'''
+tags = ["github", "token"]
+
+[[rules]]
+id = "azure-client-secret"
+description = "Azure AD application client secrets (base64-like strings in specific contexts)"
+regex = '''(?i)(client[_-]?secret|AZURE_CLIENT_SECRET)["'\s:=]+([-A-Za-z0-9._~+/]{32,})'''
+tags = ["azure", "secret"]
+
+# -----------------------------------------------------------------------------
+# Allowlists (paths/patterns to ignore)
+# -----------------------------------------------------------------------------
+
+[[rules]]
+# Allow example files (these are templates, not real secrets)
+[rules.allowlist]
+paths = [
+  '''\.tfvars\.example$''',
+  '''example\.tfvars$''',
+  '''docs/.*\.md$''',         # Documentation may show redacted examples
+  '''\.gitleaks\.toml$''',    # This config file itself
+]
+
+[[rules]]
+# Allow Terraform plan output files (contain sensitive=true placeholders, not real values)
+[rules.allowlist]
+regexes = [
+  '''\(sensitive value\)''',     # Terraform's own redaction string
+  '''\*\*\*\*\*\*\*\*''',        # Common manual redaction
+  '''<redacted>''',
+  '''REDACTED''',
+]
+
+# -----------------------------------------------------------------------------
+# Global Allowlist (apply to all rules)
+# -----------------------------------------------------------------------------
+[allowlist]
+description = "Global paths and patterns to exclude from all scans"
+
+paths = [
+  '''^\.git/''',                # Git internals
+  '''^\.terraform/''',          # Terraform provider cache
+  '''node_modules/''',          # NPM dependencies
+  '''venv/''',                  # Python virtual environments
+  '''\.venv/''',
+  '''__pycache__/''',
+  '''\.pytest_cache/''',
+  '''.*\.tfstate$''',           # State files (should not be committed anyway)
+  '''.*\.tfstate\.backup$''',
+]
+
+# Allow common placeholder strings
+regexes = [
+  '''(?i)(example|sample|dummy|placeholder|test|fake|mock|redacted)''',
+  '''(?i)(your[_-]?(secret|token|key|password))''',  # Placeholder text in docs
+  '''(?i)(insert[_-]?(secret|token|key|password))''',
+  '''<[A-Z_]+>''',              # Template variables like <CLIENT_ID>
+  '''\$\{[A-Z_]+\}''',          # Shell variable placeholders like ${SECRET}
+  '''\{\{[A-Z_]+\}\}''',        # Handlebars/template placeholders like {{SECRET}}
+]
+
+# -----------------------------------------------------------------------------
+# Entropy Thresholds (reduce false positives)
+# -----------------------------------------------------------------------------
+# Gitleaks uses Shannon entropy to detect high-randomness strings
+# Adjust these if getting too many false positives on base64/UUID patterns
+# [rules.entropy]
+# Min = "4.5"   # Minimum entropy score to flag (default 3.5; higher = fewer false positives)
+# Max = "8.0"   # Maximum entropy to consider
+# Group = "1"   # Regex capture group to measure

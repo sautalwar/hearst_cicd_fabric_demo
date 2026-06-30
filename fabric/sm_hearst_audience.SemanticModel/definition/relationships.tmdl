@@ -1,0 +1,118 @@
+/// ─────────────────────────────────────────────────────────────────────────────
+/// Star Schema Relationships: Dimensions filter Facts (single direction)
+/// ─────────────────────────────────────────────────────────────────────────────
+/// All relationships follow the standard star-schema pattern:
+///   • Dimension (1) → Fact (*)
+///   • Single direction (dimension filters fact)
+///   • Cardinality: one-to-many
+/// TODO: Verify lineageTags are unique if you encounter import errors in Power BI Desktop
+/// ─────────────────────────────────────────────────────────────────────────────
+
+/// ═════════════════════════════════════════════════════════════════════════════
+/// ENGAGEMENT RELATIONSHIPS (fct_engagement)
+/// ═════════════════════════════════════════════════════════════════════════════
+
+relationship dim_date_to_fct_engagement
+	fromColumn: dim_date.date_key
+	toColumn: fct_engagement.date_key
+	fromCardinality: one
+	toCardinality: many
+	crossFilteringBehavior: oneDirection
+	lineageTag: 00000000-0000-0000-0000-000000000090
+
+relationship dim_brand_to_fct_engagement
+	fromColumn: dim_brand.brand_key
+	toColumn: fct_engagement.brand_key
+	fromCardinality: one
+	toCardinality: many
+	crossFilteringBehavior: oneDirection
+	lineageTag: 00000000-0000-0000-0000-000000000091
+
+relationship dim_content_to_fct_engagement
+	fromColumn: dim_content.content_key
+	toColumn: fct_engagement.content_key
+	fromCardinality: one
+	toCardinality: many
+	crossFilteringBehavior: oneDirection
+	lineageTag: 00000000-0000-0000-0000-000000000092
+
+relationship dim_subscriber_to_fct_engagement
+	fromColumn: dim_subscriber.subscriber_key
+	toColumn: fct_engagement.subscriber_key
+	fromCardinality: one
+	toCardinality: many
+	crossFilteringBehavior: oneDirection
+	lineageTag: 00000000-0000-0000-0000-000000000093
+
+relationship dim_platform_to_fct_engagement
+	fromColumn: dim_platform.platform_key
+	toColumn: fct_engagement.platform_key
+	fromCardinality: one
+	toCardinality: many
+	crossFilteringBehavior: oneDirection
+	lineageTag: 00000000-0000-0000-0000-000000000094
+
+/// ═════════════════════════════════════════════════════════════════════════════
+/// SUBSCRIPTION RELATIONSHIPS (fct_subscription)
+/// ═════════════════════════════════════════════════════════════════════════════
+
+relationship dim_date_to_fct_subscription
+	fromColumn: dim_date.date_key
+	toColumn: fct_subscription.date_key
+	fromCardinality: one
+	toCardinality: many
+	crossFilteringBehavior: oneDirection
+	lineageTag: 00000000-0000-0000-0000-000000000095
+
+relationship dim_brand_to_fct_subscription
+	fromColumn: dim_brand.brand_key
+	toColumn: fct_subscription.brand_key
+	fromCardinality: one
+	toCardinality: many
+	crossFilteringBehavior: oneDirection
+	lineageTag: 00000000-0000-0000-0000-000000000096
+
+relationship dim_subscriber_to_fct_subscription
+	fromColumn: dim_subscriber.subscriber_key
+	toColumn: fct_subscription.subscriber_key
+	fromCardinality: one
+	toCardinality: many
+	crossFilteringBehavior: oneDirection
+	lineageTag: 00000000-0000-0000-0000-000000000097
+
+/// ═════════════════════════════════════════════════════════════════════════════
+/// AD RELATIONSHIPS (fct_ad)
+/// ═════════════════════════════════════════════════════════════════════════════
+
+relationship dim_date_to_fct_ad
+	fromColumn: dim_date.date_key
+	toColumn: fct_ad.date_key
+	fromCardinality: one
+	toCardinality: many
+	crossFilteringBehavior: oneDirection
+	lineageTag: 00000000-0000-0000-0000-000000000098
+
+relationship dim_brand_to_fct_ad
+	fromColumn: dim_brand.brand_key
+	toColumn: fct_ad.brand_key
+	fromCardinality: one
+	toCardinality: many
+	crossFilteringBehavior: oneDirection
+	lineageTag: 00000000-0000-0000-0000-000000000099
+
+relationship dim_campaign_to_fct_ad
+	fromColumn: dim_campaign.campaign_key
+	toColumn: fct_ad.campaign_key
+	fromCardinality: one
+	toCardinality: many
+	crossFilteringBehavior: oneDirection
+	lineageTag: 00000000-0000-0000-0000-00000000009a
+
+relationship dim_platform_to_fct_ad
+	fromColumn: dim_platform.platform_key
+	toColumn: fct_ad.platform_key
+	fromCardinality: one
+	toCardinality: many
+	crossFilteringBehavior: oneDirection
+	lineageTag: 00000000-0000-0000-0000-00000000009b
+

@@ -1,0 +1,30 @@
+/// dim_platform: Platform dimension (Web, iOS, Android, etc.)
+table dim_platform
+	lineageTag: 00000000-0000-0000-0000-000000000040
+
+	column platform_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 00000000-0000-0000-0000-000000000041
+		sourceColumn: platform_key
+		summarizeBy: none
+
+	column platform_name
+		dataType: string
+		lineageTag: 00000000-0000-0000-0000-000000000042
+		sourceColumn: platform_name
+		summarizeBy: none
+
+	column device_type
+		dataType: string
+		lineageTag: 00000000-0000-0000-0000-000000000043
+		sourceColumn: device_type
+		summarizeBy: none
+
+	partition dim_platform = entity
+		mode: directLake
+		source
+			entityName: dim_platform
+			schemaName: gold
+			expressionSource: 'DirectLake-lh_hearst_gold'
+
