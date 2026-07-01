@@ -71,22 +71,6 @@ measure 'New Subscriber Growth %' =
 
 **[Screen: Slide deck or architecture diagram]**
 
-**What to say:**
-
-> "Good morning/afternoon. Today I'm showing you Hearst's Approach A for modernizing digital audience and subscription analytics on Microsoft Fabric.
-> 
-> Hearst publishes iconic brands like Cosmopolitan, Esquire, ELLE, Good Housekeeping, and Car and Driver. We're tracking millions of page views, tens of thousands of subscribers, and ad revenue across web, iOS, and Android platforms.
-> 
-> The challenge: How do we deliver real-time analytics to executives while maintaining enterprise-grade quality, governance, and change control?
-> 
-> Our solution combines:
-> - **Medallion architecture**: Bronze → Silver → Gold for data quality and separation of concerns
-> - **Direct Lake semantic model**: Zero-ETL, real-time Power BI with no refresh windows
-> - **Conversational AI**: A data agent that lets business users ask questions in natural language
-> - **Automated CI/CD**: GitHub-driven deployment pipeline from Dev → UAT → Prod with quality gates
-> 
-> Let me show you how this works end-to-end."
-
 **[Screen: Switch to architecture diagram or README.md file on GitHub]**
 
 Show the high-level flow:
