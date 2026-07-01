@@ -72,13 +72,6 @@ This ensures the demo shows a clean promotion with visible changes.
 
 ### INTRO: Set the Stage (2 minutes)
 
-**What to say:**
-> "Today I'm showing you Hearst's Microsoft Fabric CI/CD pipeline. The goal is to demonstrate a fully automated, GitHub-driven deployment flow across three environments: Development, UAT, and Production.
->
-> The architecture uses native Fabric Deployment Pipelines for promotion, with GitHub Actions orchestrating the automation. Only the Dev workspace is Git-connected; UAT and Prod receive content exclusively via the pipeline, which prevents two competing sources of truth.
->
-> Let's walk through a real change: I'll edit a notebook, open a pull request, merge it, and watch it flow all the way to Production — with automated testing in UAT and a manual approval gate before Prod."
-
 **Screen:** Show the architecture diagram (from README.md or a slide).
 
 ---
@@ -87,7 +80,6 @@ This ensures the demo shows a clean promotion with visible changes.
 
 **What to do:**
 1. **Screen:** GitHub repo, `main` branch
-2. **Say:** "First, I'll create a feature branch and make a small change to our ingestion notebook."
 3. In terminal:
    ```powershell
    git checkout -b demo/add-comment
@@ -98,16 +90,12 @@ This ensures the demo shows a clean promotion with visible changes.
    # Demo: Log ingestion start timestamp
    print(f"[DEMO] Ingestion started at {datetime.now()}")
    ```
-6. **Say:** "This is a simple logging statement. In a real scenario, this could be a new data transformation, a schema change, or a bug fix."
 7. Commit and push:
    ```powershell
    git add .
    git commit -m "Add ingestion start timestamp logging"
    git push -u origin demo/add-comment
    ```
-
-**What to say:**
-> "Now I've pushed my branch to GitHub. Let's open a pull request."
 
 ---
 
@@ -123,21 +111,9 @@ This ensures the demo shows a clean promotion with visible changes.
 5. Click **Create pull request**
 6. **Screen:** GitHub Actions tab (show the `ci-validate` workflow starting)
 
-**What to say:**
-> "The moment I opened the PR, our CI workflow kicked off. It's running:
-> - **Notebook linting** (flake8, black) to catch code quality issues
-> - **JSON validation** on the `.platform` files (Fabric item metadata)
-> - **Terraform plan** to ensure infrastructure changes (if any) are valid
->
-> This is our first quality gate. No changes reach `main` unless they pass CI."
-
 7. Wait for CI to complete (~1-2 minutes)
 8. **Screen:** Show the green checkmark ✅ next to the workflow
-9. **Say:** "CI passed! Now I'll merge the PR."
 10. Click **Merge pull request** → **Confirm merge**
-
-**What to say:**
-> "The change is now in `main`. Let's see what happens next."
 
 ---
 
@@ -147,19 +123,10 @@ This ensures the demo shows a clean promotion with visible changes.
 1. **Screen:** GitHub Actions → `cd-dev-sync` workflow (should auto-trigger on merge to `main`)
 2. Click the running workflow to show logs
 
-**What to say:**
-> "The merge to `main` triggered our Dev sync workflow. It's calling the Fabric API — specifically, `POST /workspaces/{dev-id}/git/updateFromGit` — to pull the latest code from GitHub into the Dev workspace.
->
-> This is an **explicit, deterministic sync**. We control exactly when Dev reflects `main`, which makes downstream promotions predictable."
-
 3. Wait for workflow to complete (~30 seconds)
 4. **Screen:** Fabric Portal → Dev workspace
 5. Open the notebook (`nb_hearst_ingest`)
-6. **Say:** "Let's verify the change landed in Dev."
 7. Scroll to the added line in the notebook code → **highlight the new log statement**
-
-**What to say:**
-> "There it is! The Dev workspace now has our logging change. This is the single source of truth. Now let's promote it to UAT."
 
 ---
 
@@ -168,14 +135,6 @@ This ensures the demo shows a clean promotion with visible changes.
 **What to do:**
 1. **Screen:** GitHub Actions → Workflows
 2. Click **Run workflow** → Select `cd-promote-uat.yml` → **Run workflow**
-
-**What to say:**
-> "I'm manually triggering the UAT promotion. In production, you'd likely chain this automatically after Dev sync. The workflow will:
-> 1. Apply **deployment rules** (parameterization for UAT — e.g., rewriting lakehouse bindings)
-> 2. Call the **Fabric Deployment Pipeline API** to deploy from Dev to UAT
-> 3. Run **automated tests** in UAT — validation notebooks, SQL assertions, data quality checks
->
-> If any test fails, the workflow stops, and we don't promote to Prod."
 
 3. **Screen:** Watch the workflow logs in real-time
 4. **Highlight key log lines:**
@@ -188,11 +147,7 @@ This ensures the demo shows a clean promotion with visible changes.
 
 5. **Screen:** Fabric Portal → UAT workspace
 6. Open the notebook in UAT
-7. **Say:** "Let's confirm the change is in UAT."
 8. Scroll to the new log statement → **highlight it**
-
-**What to say:**
-> "Perfect! The notebook in UAT now has our change, and all tests passed. This means UAT is stable and ready for production release."
 
 ---
 
@@ -203,18 +158,7 @@ This ensures the demo shows a clean promotion with visible changes.
 2. Click **Run workflow** → Select `cd-promote-prod.yml` → **Run workflow**
 3. **Screen:** Show the workflow pausing with status **"Waiting for approval"**
 
-**What to say:**
-> "Here's our **manual approval gate**. The workflow calls GitHub Environments protection rules. Before deploying to Production, a human must review and approve the release.
->
-> This is critical for governance. Even in a highly automated pipeline, you want a final checkpoint before changes go live."
-
 4. **Screen:** Click the workflow run → Click **Review deployments**
-5. **Say:** "In a real scenario, I'd review:
-   - UAT test results (already passed)
-   - The change log (what's in this release)
-   - Any business considerations (e.g., is it a safe time to deploy?)
->
-> For this demo, I'll approve it now."
 
 6. Check **Production** → Click **Approve and deploy**
 7. **Screen:** Show the workflow resuming
@@ -228,19 +172,7 @@ This ensures the demo shows a clean promotion with visible changes.
 
 9. **Screen:** Fabric Portal → Prod workspace
 10. Open the notebook in Prod
-11. **Say:** "And there's our change in Production!"
 12. Scroll to the new log statement → **highlight it**
-
-**What to say:**
-> "We've now completed the full cycle:
-> - Code change in GitHub
-> - CI validation on PR
-> - Automatic sync to Dev on merge
-> - Promotion to UAT with automated testing
-> - Manual approval
-> - Deployment to Production with smoke tests
->
-> The entire flow is auditable — every deployment has a GitHub Actions log, and every change is traceable back to a Git commit and PR."
 
 ---
 
@@ -250,15 +182,6 @@ This ensures the demo shows a clean promotion with visible changes.
 1. **Screen:** Fabric Portal → Deployment Pipelines → "Hearst Fabric Release"
 2. Click **Deployment history**
 
-**What to say:**
-> "Fabric tracks every deployment. Here you can see:
-> - Who triggered the deployment (our service principal)
-> - Which stage it went from/to (Dev → UAT, UAT → Prod)
-> - Timestamp and status
-> - Which items were deployed
->
-> This is your audit trail. If something goes wrong in Prod, you can trace it back to the exact deployment and Git commit."
-
 3. **Optionally:** Click a deployment to show details (items deployed, deployment rules applied)
 
 ---
@@ -266,38 +189,19 @@ This ensures the demo shows a clean promotion with visible changes.
 ### STEP 7: Demonstrate Rollback (Optional, 3 minutes)
 
 **What to do (if time allows):**
-1. **Say:** "Let's say we discover a bug in Production. How do we roll back?"
 2. **Screen:** Terminal
 3. In Git:
    ```powershell
    git revert <last-commit-sha>
    git push origin main
    ```
-4. **Say:** "I've reverted the change in Git. Now I'll re-run the sync and promotion workflows."
 5. **Screen:** GitHub Actions → Run `cd-dev-sync.yml`
 6. Wait for sync → Run `cd-promote-uat.yml` → (Skip approval for demo) → Run `cd-promote-prod.yml`
 7. **Screen:** Fabric Portal → Prod workspace → Show the log statement is gone
 
-**What to say:**
-> "Rollback is just another deployment. We revert in Git, sync Dev, promote through UAT (with tests), and release to Prod. The pipeline ensures rollbacks are as safe as forward deployments."
-
 ---
 
 ### CLOSING: Key Takeaways (2 minutes)
-
-**What to say:**
-> "To recap, here's what we demonstrated:
->
-> 1. **Git as single source of truth** — All changes start in GitHub; Fabric workspaces reflect what's in Git.
-> 2. **Environment isolation** — Only Dev is Git-connected; UAT and Prod receive content via the deployment pipeline, preventing drift.
-> 3. **Automated testing** — UAT tests run automatically; failures block production promotion.
-> 4. **Manual governance** — A human approval gate before Production, ensuring business alignment.
-> 5. **Full auditability** — Every deployment is logged in GitHub Actions and Fabric, traceable to a commit and PR.
-> 6. **Infrastructure-as-code** — Terraform provisions workspaces, pipelines, secrets, and Git wiring — repeatable and version-controlled.
->
-> This architecture is production-ready. The patterns scale to larger teams, more environments (e.g., add a Pre-Prod stage), and additional Fabric item types (Power BI reports, data pipelines, etc.).
->
-> All the code is in the repo, including runbooks, architecture docs, and helper scripts. You can clone it, run `terraform apply`, and have your own CI/CD pipeline in under an hour."
 
 **Screen:** Show the README or repo structure one last time.
 
